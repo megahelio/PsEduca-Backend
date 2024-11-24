@@ -17,8 +17,66 @@ class UserMapper {
 	private PDO $db;
 
 	public function __construct() {
-//		$this->db = PDOConnection::getInstance();
+		$this->db = PDOConnection::getInstance();
 	}
+
+//    /**
+//     * Checks if a given pair of username/password exists in the database and returns the User object
+//     *
+//     * @param string $userName the username
+//     * @param string $password the password
+//     * @return User|null The user
+//     */
+//    public function getValidUser(string $userName, string $password): ?User
+//    {
+//        $stmt = $this->db->prepare("SELECT * FROM usuarios where nombre_usuario=? and contrasenha=?");
+//        $stmt->execute(array($userName, $password));
+//
+//        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+//
+//        if ($data) {
+//            return $this->userFromRow($data);
+//        }
+//        return null;
+//    }
+
+    /**
+     * Gets the user info from the database
+     * @param string $userName string the username of the user to get
+     * @return User|null the user info
+     */
+    public function getUserInfoFromUserName(string $userName) : ?User
+    {
+        $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE nombre_usuario= :nombre_usuario");
+        $stmt->execute(array(
+            ':nombre_usuario' => $userName
+        ));
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            return $this->userFromRow($data);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the user info from the database
+     * @param $userId string the username of the user to get
+     * @return User the user info
+     */
+    public function getUserInfo (int $userId) : ?User
+    {
+        $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE id= :id");
+        $stmt->execute(array(
+            ':id' => $userId
+        ));
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            return $this->userFromRow($data);
+        }
+        return null;
+    }
 
 	/**
 	* Saves a User into the database
@@ -28,8 +86,14 @@ class UserMapper {
 	*@throws PDOException if a database error occurs
 	*/
 	public function save(User $user) : void {
-		$stmt = $this->db->prepare("INSERT INTO User (user_name, user_password, user_email) values (?,?,?)");
-		$stmt->execute(array($user->getUserName(), $user->getPassword(), $user->getEmail()));
+		$stmt = $this->db->prepare("INSERT INTO usuarios (nombre_usuario, nombre_completo, contrasenha, rol)
+            values (:nombre_usuario, :nombre_completo, :contrasenha, :rol)");
+		$stmt->execute(array(
+            ':nombre_usuario' => $user->getUserName(),
+            ':nombre_completo' => $user->getFullName(),
+            ':contrasenha' => $user->getPassword(),
+            ':rol' => $user->getRole()->name
+        ));
 	}
 
     /**
@@ -41,23 +105,6 @@ class UserMapper {
     {
         $stmt = $this->db->prepare("DELETE FROM User WHERE user_name=?");
         $stmt->execute(array($userName));
-    }
-
-    /**
-     * Gets the user info from the database
-     * @param $userName string the username of the user to get
-     * @return User the user info
-     */
-    public function getUserInfo(string $userName) : User
-    {
-        $stmt = $this->db->prepare("SELECT user_email FROM User WHERE user_name=?");
-        $stmt->execute(array($userName));
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new User(
-            $userName,
-            null,
-            $data['user_email']
-        );
     }
 
 	/**
@@ -93,21 +140,12 @@ class UserMapper {
         return false;
     }
 
-	/**
-	* Checks if a given pair of username/password exists in the database
-	*
-	* @param string $username the username
-	* @param string $passwd the password
-	* @return boolean true the username/passwrod exists, false otherwise.
-	*/
-	public function isValidUser($username, $passwd): bool
-    {
-		$stmt = $this->db->prepare("SELECT count(*) FROM User where user_name=? and user_password=?");
-		$stmt->execute(array($username, $passwd));
-
-		if ($stmt->fetchColumn() > 0) {
-			return true;
-		}
-		return false;
-	}
+    private function userFromRow($row): User {
+        return new User(
+            $row['id'],
+            $row['nombre_usuario'],
+            $row['contrasenha'],
+            UserRole::from($row['rol']),
+            $row['nombre_completo']);
+    }
 }

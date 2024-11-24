@@ -13,9 +13,8 @@ class ValidationException extends Exception {
 
 	/**
 	* Array of errors
-	* @var mixed
 	*/
-	private $errors = array();
+	private array $errors;
 
 	public function __construct(array $errors, $msg=NULL){
 		parent::__construct($msg);
@@ -25,9 +24,10 @@ class ValidationException extends Exception {
 	/**
 	* Gets the validation errors
 	*
-	* @return mixed The validation errors
+	* @return array The validation errors
 	*/
-	public function getErrors() {
+	public function getErrors(): array
+    {
 		return $this->errors;
 	}
 }
