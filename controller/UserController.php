@@ -1,8 +1,9 @@
 <?php
 
 require_once(__DIR__ . "/BaseController.php");
+require_once (__DIR__ . "/../core/ResponseCodes.php");
 require_once(__DIR__."/../model/User.php");
-require_once(__DIR__."/../service/UserService.php");
+require_once(__DIR__ . "/../service/UserService.php");
 
 /**
  * Class UserController
@@ -19,13 +20,50 @@ class UserController extends BaseController {
 		$this->userService = new UserService();
 	}
 
+    public function get($data): void
+    {
+        try {
+            $user = parent::authenticateUser();
+
+            if ($user->getRole() != UserRole::ADMIN_GLOBAL) {
+                parent::generateHttpResponse(403, ResponseCodes::FORBIDDEN_ACCESS_KO);
+            }
+
+            $userId = $data['id'] ?? null;
+
+            $user = $this->userService->get($userId);
+
+            $toRet = array(
+                "id" => $user->getId(),
+                "role" => $user->getRole()->name,
+                "name" => $user->getUserName(),
+                "fullName" => $user->getFullName()
+            );
+            parent::generateHttpResponse(200, ResponseCodes::RECORDSET_DATA, $toRet);
+
+        } catch (\exception\NotFoundException) {
+            parent::generateHttpResponse(404, ResponseCodes::NOT_FOUND_KO);
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
+        } catch (Exception) {
+            parent::generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
+        }
+    }
+
 
 	public function add($data): void
     {
 
-        $userName = $data['user_name'] ?? null;
-        $email = $data['user_email'] ?? null;
-        $password = $data['user_password'] ?? null;
+//        $userName = $data['user_name'] ?? null;
+//        $email = $data['user_email'] ?? null;
+//        $password = $data['user_password'] ?? null;
+
+        // Prueba
+        $userName = $data['userName'] ?? null;
+        $nombreCompleto = $data['fullName'] ?? null;
+        $strRole = $data['role'] ?? null;
+        $rol = UserRole::from($strRole);
+        $contrasenha = $data['password'] ?? null;
 
 		try {
             $errors = array();
@@ -44,11 +82,10 @@ class UserController extends BaseController {
             }
 
 			// Si no existen, inserta el nuevo usuario en la base de datos
-			$this->userService->add($userName, $password, $email);
+			$this->userService->add($userName, $nombreCompleto, $contrasenha, $rol);
 
-			parent::answerJson201(array(
-                "user_name" => $data->user_name,
-                "user_email" => $data->user_email
+			parent::generateHttpResponse(201, ResponseCodes::RECORDSET_DATA, array(
+                "user_name" => $userName
             ));
 
 		} catch (ValidationException $e) {
@@ -74,12 +111,6 @@ class UserController extends BaseController {
         }
 	}
 
-    public function action1($form_data): void
-    {
-        $form_data['controller'] = 'user';
-        $form_data['action'] = 'action1';
-        parent::answerJson200($form_data);
-    }
 
     /*
      * Posible código (necesita reparaciones) para hacer un cambio de contraseña mediante envío de código de

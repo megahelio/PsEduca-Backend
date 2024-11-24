@@ -30,14 +30,14 @@ USE `pseduca`;
 --
 
 CREATE TABLE IF NOT EXISTS `miembros` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `descripcion` text NOT NULL,
-  `link_aportaciones_externo` varchar(255) NOT NULL,
-  `imagen` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `nombre` varchar(255) NOT NULL,
+    `email` varchar(255) NOT NULL,
+    `descripcion` text NOT NULL,
+    `link_aportaciones_externo` varchar(255) NOT NULL,
+    `imagen` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -46,13 +46,15 @@ CREATE TABLE IF NOT EXISTS `miembros` (
 --
 
 CREATE TABLE IF NOT EXISTS `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre_usuario` varchar(255) NOT NULL,
-  `nombre_completo` varchar(255) DEFAULT NULL,
-  `contrasenha` varchar(255) NOT NULL,
-  `rol` enum('ADMIN_GLOBAL','GESTOR_CATALOGO','USUARIO_PYP') NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `nombre_usuario` varchar(255) NOT NULL,
+    `nombre_completo` varchar(255) DEFAULT NULL,
+    `contrasenha` varchar(255) NOT NULL,
+    `rol` enum('ADMIN_GLOBAL','GESTOR_CATALOGO','USUARIO_PYP') NOT NULL,
+    `ultima_modificacion_contrasenha` datetime NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `usuarios_pk` (`nombre_usuario`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,6 +3,12 @@
 
 require_once(__DIR__."/../core/ValidationException.php");
 
+    enum UserRole: string {
+    case ADMIN_GLOBAL = 'ADMIN_GLOBAL';
+    case GESTOR_CATALOGO = 'GESTOR_CATALOGO';
+    case USUARIO_PYP = 'USUARIO_PYP';
+}
+
 /**
 * Class User
 *
@@ -10,6 +16,12 @@ require_once(__DIR__."/../core/ValidationException.php");
 */
 class User
 {
+
+    /**
+     * The id of this user
+     * @var int|null
+     */
+    private ?int $id;
 
     /**
      * @var string|null
@@ -33,14 +45,16 @@ class User
     private ?string $password;
 
     /**
-     * The email of the user
-     * @var string|null
-//
-     * @Regex (
-     *     pattern="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/",
-     * )
+     * The role of the user
+     * @var UserRole|null
      */
-    private ?string $email;
+    private ?UserRole $role;
+
+    /**
+     * Full name of the user
+     * @var string|null
+     */
+    private ?string $fullName;
 
     /**
      * The constructor
@@ -48,11 +62,34 @@ class User
      * @param string|null $userName The name of the user
      * @param string|null $passwd The password of the user
      */
-    public function __construct(string $userName = NULL, string $passwd = NULL, string $email = NULL)
+    public function __construct(int $id = NULL, string $userName = NULL, string $passwd = NULL, UserRole $role = NULL, string $fullName = NULL)
     {
+        $this->id = $id;
         $this->userName = $userName;
         $this->password = $passwd;
-        $this->email = $email;
+        $this->role = $role;
+        $this->fullName = $fullName;
+    }
+
+    /**
+     * Gets the id of this user
+     *
+     * @return int|null The id of this user
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets the id of this user
+     *
+     * @param int $id The id of this user
+     * @return void
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     /**
@@ -77,13 +114,14 @@ class User
     }
 
     /**
-     * Gets the password of this user.
+     * Gets the password of this user
+     *
      * @return string|null The password of this user
      */
-	public function getPassword(): ?string
+    public function getPassword(): ?string
     {
-		return $this->password;
-	}
+        return $this->password;
+    }
 
     /**
      * Sets the password of this user
@@ -97,23 +135,39 @@ class User
     }
 
     /**
+     * Gets the role of this user
+     */
+    public function getRole(): ?UserRole
+    {
+        return $this->role;
+    }
+
+    /**
+     * Sets the role of this user
+     */
+    public function setRole(UserRole $role): void
+    {
+        $this->role = $role;
+    }
+
+    /**
      * Gets the email of this user
      *
      * @return string|null The email of this user
      */
-    public function getEmail(): ?string
+    public function getFullName(): ?string
     {
-        return $this->email;
+        return $this->fullName;
     }
 
     /**
      * Sets the email of this user
      *
-     * @param string $email The password of this user
+     * @param string $fullName The password of this user
      * @return void
      */
-    public function setEmail(string $email): void
+    public function setFullName(string $fullName): void
     {
-        $this->email = empty($email) ? null : $email;
+        $this->fullName = empty($fullName) ? null : $fullName;
     }
 }
