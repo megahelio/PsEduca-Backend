@@ -1,9 +1,9 @@
 <?php
 
-use Firebase\JWT\ExpiredException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Firebase\JWT\SignatureInvalidException;
+//use Firebase\JWT\ExpiredException;
+//use Firebase\JWT\JWT;
+//use Firebase\JWT\Key;
+//use Firebase\JWT\SignatureInvalidException;
 use JetBrains\PhpStorm\NoReturn;
 
 require_once(__DIR__."/../model/User.php");
@@ -19,7 +19,6 @@ require_once(__DIR__ . "/../service/UserService.php");
 */
 class BaseController {
 
-    protected static string $jwt_key = JWT_KEY;
     private UserService $userService;
 
 	public function __construct() {
@@ -38,7 +37,10 @@ class BaseController {
 	*/
 	public function authenticateUser() : User {
         try {
-            $authorizationHeader = apache_request_headers()["Authorization"];
+            $authorizationHeader = apache_request_headers()['Authorization']??null;
+            if (empty($authorizationHeader)) {
+                $this->generateHttpResponse(401, ResponseCodes::AUTHENTICATION_REQUIRED_KO);
+            }
 
             if (empty($authorizationHeader)){
                 $this->generateHttpResponse(401, ResponseCodes::AUTHENTICATION_REQUIRED_KO);
@@ -50,25 +52,20 @@ class BaseController {
                 if ($type === 'Bearer') {
 
                     // Usar firebase/php-jwt para verificar y decodificar el token JWT
-                    $decoded_array = (array) JWT::decode($token, new Key(BaseController::$jwt_key, 'HS256'));
-
-                    if (!empty($decoded_array["aud"]) && $this->userService->userNameExists($decoded_array["aud"])) {
-                        return $this->userService->get($decoded_array["aud"]);
-                    }else{
-                        $this->generateHttpResponse(401, ResponseCodes::AUTHENTICATION_INVALID_KO);
-                    }
+                    $jwt_instance = new JWT();
+                    $decoded_array = $jwt_instance->decode($token);
+                    print_r($decoded_array);
+                    return $this->userService->get($decoded_array["sub"]);
 
                 } else {
                     // Tipo de autenticación no soportado
                     $this->generateHttpResponse(400, ResponseCodes::AUTHENTICATION_TYPE_NOT_SUPPORTED_KO);
                 }
             }
-        }catch (\exception\NotFoundException){
-            $this->generateHttpResponse(401, ResponseCodes::NOT_FOUND_KO);
-        }catch (ExpiredException){
-            $this->generateHttpResponse(401, ResponseCodes::AUTHENTICATION_EXPIRED_KO);
-        }catch (SignatureInvalidException|UnexpectedValueException) {
+        } catch (\exception\NotFoundException $exc) {
             $this->generateHttpResponse(401, ResponseCodes::AUTHENTICATION_INVALID_KO);
+        } catch (ValidationException $exc) {
+            $this->generateHttpResponse(401, $exc->getErrors());
         } catch (Exception){
             $this->generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
         }

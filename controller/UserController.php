@@ -53,6 +53,7 @@ class UserController extends BaseController {
 
 	public function add($data): void
     {
+        $user = parent::authenticateUser();
 
 //        $userName = $data['user_name'] ?? null;
 //        $email = $data['user_email'] ?? null;
@@ -89,9 +90,11 @@ class UserController extends BaseController {
             ));
 
 		} catch (ValidationException $e) {
-            parent::error400($e->getErrors());
+            parent::generateHttpResponse(400, $e->getErrors());
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
         } catch (Exception) {
-            parent::error500();
+            parent::generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
         }
 	}
 

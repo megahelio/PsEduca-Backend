@@ -3,7 +3,7 @@
 
 require_once(__DIR__."/../core/ValidationException.php");
 
-    enum UserRole: string {
+enum UserRole: string {
     case ADMIN_GLOBAL = 'ADMIN_GLOBAL';
     case GESTOR_CATALOGO = 'GESTOR_CATALOGO';
     case USUARIO_PYP = 'USUARIO_PYP';
@@ -25,21 +25,12 @@ class User
 
     /**
      * @var string|null
-     * @NotNull
-     * @Regex (
-     *     pattern="/^[a-zA-Z0-9]{6,}$/",
-     * )
      */
     private ?string $userName;
 
     /**
      * The password of the user
      * @var string|null
-     * @NotNull
-     * @Regex(
-     *     pattern="/^[a-zA-Z0-9]{6,}$/",
-     *     message="El password debe tener al menos 6 caracteres alfanuméricos."
-     * )
      * It will be null unless the user is being registered or password is being updated
      */
     private ?string $password;
@@ -79,17 +70,6 @@ class User
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * Sets the id of this user
-     *
-     * @param int $id The id of this user
-     * @return void
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     /**

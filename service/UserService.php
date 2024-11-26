@@ -1,7 +1,6 @@
 <?php
 
 use exception\NotFoundException;
-use Firebase\JWT\JWT;
 
 require_once __DIR__ . "/../model/User.php";
 require_once __DIR__ . "/../mapper/UserMapper.php";
@@ -38,14 +37,15 @@ class UserService {
             }
 
             $payload = [
-                'iss' => SERVER_URL,
+//                'iss' => SERVER_URL,
                 'sub' => $user->getId(),
                 'iat' => time(),
                 'exp' => time() + (86400 * 30), // Los tokens expiran en 1 día
                 'role' => $user->getRole()->name,
             ];
 
-            $jwt_token = JWT::encode($payload, JWT_KEY, 'HS256');
+            $jwt_instance = new JWT();
+            $jwt_token = $jwt_instance->generate($payload);
 
             // Devuelve una respuesta HTTP 200
             return array(

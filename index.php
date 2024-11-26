@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . "/core/config_file.php";
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . "/core/JWT.php";
 
 function run(): void {
 	$headers = apache_request_headers();
