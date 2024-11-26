@@ -16,7 +16,7 @@ class AuthController extends BaseController
     public function login($data): void
     {
         $userName = $data['userName'] ?? null;
-        $password = $data['userPassword'] ?? null;
+        $password = $data['password'] ?? null;
 
         try {
             $data = $this->userService->login($userName, $password);
