@@ -3,7 +3,7 @@ require_once __DIR__ . "/core/config_file.php";
 require_once __DIR__ . "/core/JWT.php";
 
 function run(): void {
-	$headers = apache_request_headers();
+	$headers = $_GET;
 
 	try {
 		// Validar que los encabezados incluyan "controller" y "action"

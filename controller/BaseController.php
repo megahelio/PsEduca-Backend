@@ -54,7 +54,7 @@ class BaseController {
                     // Usar firebase/php-jwt para verificar y decodificar el token JWT
                     $jwt_instance = new JWT();
                     $decoded_array = $jwt_instance->decode($token);
-                    print_r($decoded_array);
+
                     return $this->userService->get($decoded_array["sub"]);
 
                 } else {

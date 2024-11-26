@@ -13,6 +13,8 @@ Permite iniciar sesión en la aplicación.
 Únicamente se aceptará envío mediante método **POST** y utilizando **form-data**.
 Las respuestas serán siempre en formato **JSON**.
 
+http://localhost/PsEduca-Backend/?controller=auth&action=login
+
 Se requiere enviar los siguientes campos:
 
  - `userName` (string, obligatorio): Nombre de usuario.
