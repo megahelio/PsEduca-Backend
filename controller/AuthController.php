@@ -1,5 +1,7 @@
 <?php
 
+use exception\ValidationException;
+
 require_once __DIR__ . "/BaseController.php";
 require_once __DIR__ . "/../core/ResponseCodes.php";
 
@@ -8,7 +10,6 @@ class AuthController extends BaseController
     private UserService $userService;
 
     public function __construct() {
-        parent::__construct();
 
         $this->userService = new UserService();
     }
@@ -20,7 +21,7 @@ class AuthController extends BaseController
 
         try {
             $data = $this->userService->login($userName, $password);
-            parent::generateHttpResponse(200, ResponseCodes::RECORDSET_DATA, array(
+            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), array(
                 "jwtToken" => $data['jwtToken'],
                 "tokenExpirationDate" => $data['tokenExpirationDate'],
                 "user" => array(
@@ -30,12 +31,14 @@ class AuthController extends BaseController
                     "fullName" => $data['user']->getFullName(),
                 )
             ));
+        } catch (ValidationException $e) {
+            parent::generateHttpResponse(400, $e->getErrors());
         } catch (\exception\NotFoundException) {
             parent::generateHttpResponse(404, array(ResponseCodes::USER_CREDENTIALS_INVALID_KO));
-        } catch (PDOException $e) {
-            parent::generateHttpResponse(503, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
-        } catch (Exception $e) {
-            parent::generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable) {
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
 }

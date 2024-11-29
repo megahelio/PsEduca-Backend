@@ -1,4 +1,7 @@
 <?php
+
+use exception\ValidationException;
+
 class JWT
 {
     /**
@@ -83,7 +86,7 @@ class JWT
             throw new ValidationException(array(ResponseCodes::AUTHENTICATION_INVALID_KO));
         }
 
-        if (isset(json_decode($payload)->iss)) {
+        if (isset(json_decode($payload)->iss) && isset(json_decode($headers)->iss)) {
             if (json_decode($headers)->iss != json_decode($payload)->iss) {
                 throw new ValidationException(array(ResponseCodes::AUTHENTICATION_INVALID_KO));
             }

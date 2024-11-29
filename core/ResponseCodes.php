@@ -18,4 +18,8 @@ class ResponseCodes {
     const AUTHENTICATION_INVALID_KO = 'AUTHENTICATION_INVALID_KO'; // Token inválido.
 
     const INTERNAL_SERVER_ERROR_KO = 'INTERNAL_SERVER_ERROR_KO'; // Error interno del servidor.
+
+    // Errores de validación de USUARIOS
+
+    const USUARIO_NO_ENCONTRADO_A_KO = 'USUARIO_NO_ENCONTRADO_A_KO'; // Usuario no encontrado.
 }

@@ -10,6 +10,16 @@ require_once(__DIR__."/../core/PDOConnection.php");
 */
 class UserMapper {
 
+    private static ?UserMapper $instance = null;
+
+    public static function getInstance(): UserMapper
+    {
+        if (self::$instance == null) {
+            self::$instance = new UserMapper();
+        }
+        return self::$instance;
+    }
+
 	/**
 	* Reference to the PDO connection
 	* @var PDO
@@ -19,26 +29,6 @@ class UserMapper {
 	public function __construct() {
 		$this->db = PDOConnection::getInstance();
 	}
-
-//    /**
-//     * Checks if a given pair of username/password exists in the database and returns the User object
-//     *
-//     * @param string $userName the username
-//     * @param string $password the password
-//     * @return User|null The user
-//     */
-//    public function getValidUser(string $userName, string $password): ?User
-//    {
-//        $stmt = $this->db->prepare("SELECT * FROM usuarios where nombre_usuario=? and contrasenha=?");
-//        $stmt->execute(array($userName, $password));
-//
-//        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-//
-//        if ($data) {
-//            return $this->userFromRow($data);
-//        }
-//        return null;
-//    }
 
     /**
      * Gets the user info from the database
@@ -61,8 +51,8 @@ class UserMapper {
 
     /**
      * Gets the user info from the database
-     * @param $userId string the username of the user to get
-     * @return User the user info
+     * @param int $userId the id of the user to get
+     * @return User|null the user info
      */
     public function getUserInfo (int $userId) : ?User
     {
@@ -78,33 +68,61 @@ class UserMapper {
         return null;
     }
 
-	/**
-	* Saves a User into the database
-	*
-	* @param User $user The user to be saved
-	* @return void
-	*@throws PDOException if a database error occurs
-	*/
-	public function save(User $user) : void {
+    public function list(): array
+    {
+        $stmt = $this->db->query("SELECT * FROM usuarios");
+        $usersDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = [];
+        foreach ($usersDb as $userDb) {
+            $users[] = $this->userFromRow($userDb);
+        }
+        return $users;
+    }
+
+    /**
+     * Saves a User into the database
+     *
+     * @param User $user The user to be saved
+     * @return User
+     */
+	public function save(User $user) : User {
 		$stmt = $this->db->prepare("INSERT INTO usuarios (nombre_usuario, nombre_completo, contrasenha, rol)
             values (:nombre_usuario, :nombre_completo, :contrasenha, :rol)");
 		$stmt->execute(array(
             ':nombre_usuario' => $user->getUserName(),
             ':nombre_completo' => $user->getFullName(),
-            ':contrasenha' => $user->getPassword(),
+            ':contrasenha' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
             ':rol' => $user->getRole()->name
         ));
+        $user->setId($this->db->lastInsertId());
+        return $user;
 	}
+
+    public function edit(User $user) : bool
+    {
+        $stmt = $this->db->prepare("UPDATE usuarios SET nombre_usuario=:nombre_usuario, nombre_completo=:nombre_completo,
+                    contrasenha=:contrasenha, rol=:rol WHERE id=:id");
+        $stmt->execute(array(
+            ':id' => $user->getId(),
+            ':nombre_usuario' => $user->getUserName(),
+            ':nombre_completo' => $user->getFullName(),
+            ':contrasenha' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
+            ':rol' => $user->getRole()->name
+        ));
+        return $stmt->rowCount() == 1;
+    }
 
     /**
      * Deletes a user from the database
-     * @param $userName string the username of the user to get
-     * @return void
+     * @param $userId string the username of the user to get
+     * @return bool
      */
-    public function delete(string $userName): void
+    public function delete(string $userId): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM User WHERE user_name=?");
-        $stmt->execute(array($userName));
+        $stmt = $this->db->prepare("DELETE FROM usuarios WHERE id=?");
+        $stmt->execute(array($userId));
+
+        return $stmt->rowCount() == 1;
     }
 
 	/**
@@ -115,7 +133,7 @@ class UserMapper {
 	*/
 	public function userNameExists(string $userName): bool
     {
-		$stmt = $this->db->prepare("SELECT count(*) FROM User where user_name=?");
+		$stmt = $this->db->prepare("SELECT count(*) FROM usuarios where nombre_usuario=?");
 		$stmt->execute(array($userName));
 
 		if ($stmt->fetchColumn() > 0) {
@@ -124,15 +142,26 @@ class UserMapper {
 		return false;
 	}
 
+    public function userNameExistsExceptSelf(string $userName, ?string $userId = null): bool
+    {
+        $stmt = $this->db->prepare("SELECT count(*) FROM usuarios where nombre_usuario=? AND id!=?");
+        $stmt->execute(array($userName, $userId));
+
+        if ($stmt->fetchColumn() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Checks if a given email is already in the database
-     * @param string $userEmail the email to check
+     * @param int $userId the ID to check
      * @return bool true if the email exists, false otherwise
      */
-    public function userEmailExists(string $userEmail): bool
+    public function userExists(int $userId): bool
     {
-        $stmt = $this->db->prepare("SELECT count(*) FROM User where user_email=?");
-        $stmt->execute(array($userEmail));
+        $stmt = $this->db->prepare("SELECT count(*) FROM usuarios where id=?");
+        $stmt->execute(array($userId));
 
         if ($stmt->fetchColumn() > 0) {
             return true;
