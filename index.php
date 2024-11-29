@@ -11,6 +11,7 @@ function run(): void {
     error_reporting(E_ALL);
 
     // Configuración para solicitudes preflight (OPTIONS)
+
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: POST, OPTIONS");
