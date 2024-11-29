@@ -1,8 +1,6 @@
 <?php
 // file: model/User.php
 
-require_once(__DIR__."/../core/ValidationException.php");
-
 enum UserRole: string {
     case ADMIN_GLOBAL = 'ADMIN_GLOBAL';
     case GESTOR_CATALOGO = 'GESTOR_CATALOGO';
@@ -19,9 +17,9 @@ class User
 
     /**
      * The id of this user
-     * @var int|null
+     * @var string|null
      */
-    private ?int $id;
+    private ?string $id;
 
     /**
      * @var string|null
@@ -37,9 +35,9 @@ class User
 
     /**
      * The role of the user
-     * @var UserRole|null
+     * @var UserRole|string|null
      */
-    private ?UserRole $role;
+    private UserRole|string|null $role;
 
     /**
      * Full name of the user
@@ -53,7 +51,7 @@ class User
      * @param string|null $userName The name of the user
      * @param string|null $passwd The password of the user
      */
-    public function __construct(int $id = NULL, string $userName = NULL, string $passwd = NULL, UserRole $role = NULL, string $fullName = NULL)
+    public function __construct(string $id = NULL, string $userName = NULL, string $passwd = NULL, UserRole|string|null $role = NULL, string $fullName = NULL)
     {
         $this->id = $id;
         $this->userName = $userName;
@@ -65,11 +63,22 @@ class User
     /**
      * Gets the id of this user
      *
-     * @return int|null The id of this user
+     * @return string|null The id of this user
      */
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    /**
+     * Sets the id of this user
+     *
+     * @param string $id The id of this user
+     * @return void
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
     /**
@@ -115,9 +124,11 @@ class User
     }
 
     /**
-     * Gets the role of this user
+     * Gets the role of this user.
+     * If user comes from the database, it will be a UserRole.
+     * If user is being registered, it will be a string (because of format validation).
      */
-    public function getRole(): ?UserRole
+    public function getRole(): UserRole|string|null
     {
         return $this->role;
     }
@@ -125,7 +136,7 @@ class User
     /**
      * Sets the role of this user
      */
-    public function setRole(UserRole $role): void
+    public function setRole(UserRole|string $role): void
     {
         $this->role = $role;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use exception\NotFoundException;
+use exception\ValidationException;
 
 require_once __DIR__ . "/../model/User.php";
 require_once __DIR__ . "/../mapper/UserMapper.php";
@@ -15,20 +16,27 @@ require_once __DIR__ . "/../exception/NotFoundException.php";
 class UserService {
 
     private UserMapper $userMapper;
-    private Validator $validator;
 
     public function __construct() {
-        $this->userMapper = new UserMapper();
-        $this->validator = new Validator();
+        $this->userMapper = UserMapper::getInstance();
     }
 
     /**
+     * @param string|null $userName the username sent by the still anonymous user
+     * @param string|null $userPassword the password sent by the still anonymous user
+     * @return array an array containing the user, the JWT token, and the expiration date of the token
      * @throws NotFoundException
+     * @throws ReflectionException
+     * @throws ValidationException
      */
-    public function login($userName, $userPassword): array
+    public function login(?string $userName, ?string $userPassword): array
     {
-        // Verifica si la contraseña es correcta
+        $user = new User(null, $userName, $userPassword, null, null);
+        Validator::validate($user, Action::LOGIN);
+
+        // Get the user info from the database
         $user = $this->userMapper->getUserInfoFromUserName($userName);
+
         if ($user != null) {
 
             if (!password_verify($userPassword, $user->getPassword())) {
@@ -61,11 +69,73 @@ class UserService {
     }
 
     /**
+     * @throws ValidationException
+     * @throws ReflectionException
+     */
+    public function add(?string $username, ?string $fullName, ?string $password, ?string $strRole): User
+    {
+
+        $user = new User(null, $username, $password, $strRole, $fullName);
+
+        Validator::validate($user, Action::ADD);
+
+        return $this->userMapper->save($user);
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws ReflectionException
      * @throws NotFoundException
      */
-    public function get($userId) : User
+    public function edit(?string $id, ?string $userName, ?string $fullName, ?string $password, ?string $strRole): User
     {
+
+        $user = $this->get($id);
+
+        // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
+        if ($userName != null) $user->setUserName($userName);
+        if ($fullName != null) $user->setFullName($fullName);
+        if ($password != null) $user->setPassword($password);
+        if ($strRole != null) $user->setRole($strRole);
+
+        Validator::validate($user, Action::EDIT);
+
+        if ($this->userMapper->edit($user)) {
+            return $user;
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws ValidationException
+     * @throws NotFoundException
+     */
+    public function delete($userId): void
+    {
+        $user = new User($userId, null, null,null,null);
+        Validator::validate($user, Action::DELETE);
+
+        if (!$this->userMapper->delete($userId)) {
+            throw new NotFoundException();
+        }
+    }
+
+    /**
+     * @param string|null $userId el id del usuario a obtener
+     * @return User
+     * @throws NotFoundException
+     * @throws ReflectionException
+     * @throws ValidationException
+     */
+    public function get(?string $userId) : User
+    {
+        $user = new User($userId, null, null,null,null);
+        Validator::validate($user, Action::GET);
+
         $user = $this->userMapper->getUserInfo($userId);
+
         if ($user != null) {
             return $user;
         } else {
@@ -74,34 +144,12 @@ class UserService {
     }
 
     /**
+     * @throws ReflectionException
      * @throws ValidationException
      */
-    public function add($username, $fullName, $passwd, $role): void
+    public function list(): array
     {
-
-        $user = new User(null, $username, password_hash($passwd, PASSWORD_BCRYPT), $role, $fullName);
-
-//        $format_errors = $this->validator->validate($user);
-
-//        if (sizeof($format_errors) > 0) {
-//            throw new ValidationException($format_errors);
-//        }
-
-        $this->userMapper->save($user);
-    }
-
-    public function delete($userName): void
-    {
-        $this->userMapper->delete($userName);
-    }
-
-    public function userNameExists($userName): bool
-    {
-        return $this->userMapper->userNameExists($userName);
-    }
-
-    public function userEmailExists($userEmail): bool
-    {
-        return $this->userMapper->userEmailExists($userEmail);
+        Validator::validate(new User(), Action::LIST);
+        return $this->userMapper->list();
     }
 }

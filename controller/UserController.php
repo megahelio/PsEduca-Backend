@@ -1,5 +1,8 @@
 <?php
 
+use exception\NotFoundException;
+use exception\ValidationException;
+
 require_once(__DIR__ . "/BaseController.php");
 require_once (__DIR__ . "/../core/ResponseCodes.php");
 require_once(__DIR__."/../model/User.php");
@@ -15,7 +18,6 @@ class UserController extends BaseController {
     private UserService $userService;
 
 	public function __construct() {
-		parent::__construct();
 
 		$this->userService = new UserService();
 	}
@@ -23,94 +25,134 @@ class UserController extends BaseController {
     public function get($data): void
     {
         try {
-            $user = parent::authenticateUser();
-
-            if ($user->getRole() != UserRole::ADMIN_GLOBAL) {
-                parent::generateHttpResponse(403, ResponseCodes::FORBIDDEN_ACCESS_KO);
-            }
 
             $userId = $data['id'] ?? null;
 
             $user = $this->userService->get($userId);
 
-            $toRet = array(
+            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), array(
                 "id" => $user->getId(),
                 "role" => $user->getRole()->name,
                 "name" => $user->getUserName(),
                 "fullName" => $user->getFullName()
-            );
-            parent::generateHttpResponse(200, ResponseCodes::RECORDSET_DATA, $toRet);
+            ));
 
-        } catch (\exception\NotFoundException) {
-            parent::generateHttpResponse(404, ResponseCodes::NOT_FOUND_KO);
+        } catch (ValidationException $e) {
+            parent::generateHttpResponse(400, $e->getErrors());
+        } catch (NotFoundException) {
+            parent::generateHttpResponse(404, array(ResponseCodes::USUARIO_NO_ENCONTRADO_A_KO));
         } catch (PDOException) {
-            parent::generateHttpResponse(503, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
-        } catch (Exception) {
-            parent::generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable) {
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
 
+    public function list() : void
+    {
+        try {
+
+            $users = $this->userService->list();
+
+            $usersArray = array();
+
+            foreach ($users as $user) {
+                $usersArray[] = array(
+                    "id" => $user->getId(),
+                    "role" => $user->getRole()->name,
+                    "name" => $user->getUserName(),
+                    "fullName" => $user->getFullName()
+                );
+            }
+
+            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), $usersArray);
+
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable) {
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        }
+
+    }
 
 	public function add($data): void
     {
-        $user = parent::authenticateUser();
+        try {
 
-//        $userName = $data['user_name'] ?? null;
-//        $email = $data['user_email'] ?? null;
-//        $password = $data['user_password'] ?? null;
+            $userName = $data['userName'] ?? null;
+            $fullName = $data['fullName'] ?? null;
+            $password = $data['password'] ?? null;
+            $strRole = $data['role'] ?? null;
 
-        // Prueba
-        $userName = $data['userName'] ?? null;
-        $nombreCompleto = $data['fullName'] ?? null;
-        $strRole = $data['role'] ?? null;
-        $rol = UserRole::from($strRole);
-        $contrasenha = $data['password'] ?? null;
+			$newUser = $this->userService->add($userName, $fullName, $password, $strRole);
 
-		try {
-            $errors = array();
-
-//			if ($this->userService->userEmailExists($email)) {
-//				$errors['user_name'] = "El correo electrónico ya existe.";
-//			}
-//
-//			if ($this->userService->userNameExists($userName)) {
-//                $errors['user_email'] = "El correo electrónico ya existe.";
-//			}
-
-            // Si existen, devuelve una respuesta HTTP 409
-            if (sizeof($errors) > 0){
-                parent::error409($errors);
-            }
-
-			// Si no existen, inserta el nuevo usuario en la base de datos
-			$this->userService->add($userName, $nombreCompleto, $contrasenha, $rol);
-
-			parent::generateHttpResponse(201, ResponseCodes::RECORDSET_DATA, array(
-                "user_name" => $userName
+			parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA), array(
+                "id" => $newUser->getId(),
+                "role" => $newUser->getRole()->name,
+                "name" => $newUser->getUserName(),
+                "fullName" => $newUser->getFullName(),
             ));
 
 		} catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (PDOException) {
-            parent::generateHttpResponse(503, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
-        } catch (Exception) {
-            parent::generateHttpResponse(500, ResponseCodes::INTERNAL_SERVER_ERROR_KO);
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable $e) {
+            echo $e;
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
 	}
+
+    public function edit($data): void
+    {
+        try {
+
+            $id = $data['id'] ?? null;
+            $userName = $data['userName'] ?? null;
+            $fullName = $data['fullName'] ?? null;
+            $password = $data['password'] ?? null;
+            $strRole = $data['role'] ?? null;
+
+            $user = $this->userService->edit($id, $userName, $fullName, $password, $strRole);
+
+            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), array(
+                "id" => $user->getId(),
+                "role" => $user->getRole()->name,
+                "name" => $user->getUserName(),
+                "fullName" => $user->getFullName(),
+            ));
+
+        } catch (ValidationException $e) {
+            parent::generateHttpResponse(400, $e->getErrors());
+        } catch (NotFoundException) {
+            parent::generateHttpResponse(404, array(ResponseCodes::USUARIO_NO_ENCONTRADO_A_KO));
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable) {
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        }
+    }
 
 	public function delete($data): void
     {
 		try {
-            $user = parent::authenticateUser();
 
-            $this->userService->delete($user->getUserName());
+            $id = $data['id'] ?? null;
 
-            parent::answerString204("User deleted");
+            $this->userService->delete($id);
 
-		} catch (ValidationException $e) {
-            parent::error400($e->getErrors());
-        } catch (Exception) {
-            parent::error500();
+            // El código 204 NO CONTENT indica que la petición se ha completado con éxito, pero su respuesta no tiene ningún contenido.
+            // Como tengo que devolver un JSON con ok y code, tengo que devolver un 200 OK.
+            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_EMPTY));
+
+        } catch (ValidationException $e) {
+            parent::generateHttpResponse(400, $e->getErrors());
+        } catch (NotFoundException) {
+            parent::generateHttpResponse(404, array(ResponseCodes::USUARIO_NO_ENCONTRADO_A_KO));
+        } catch (PDOException) {
+            parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
+        } catch (Throwable) {
+            parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
 	}
 
