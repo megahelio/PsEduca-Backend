@@ -1,8 +1,5 @@
 <?php
 
-use exception\NotFoundException;
-use exception\ValidationException;
-
 require_once(__DIR__ . "/BaseController.php");
 require_once (__DIR__ . "/../core/ResponseCodes.php");
 require_once(__DIR__."/../model/User.php");
@@ -97,8 +94,7 @@ class UserController extends BaseController {
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
 	}

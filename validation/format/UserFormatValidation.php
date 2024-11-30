@@ -17,10 +17,17 @@ class UserFormatValidation {
 
             Action::GET, Action::DELETE => $this->validateId($user->getId()),
 
-            Action::ADD, Action::EDIT => array_merge(
+            Action::ADD => array_merge(
                 $this->validateUserName($user->getUserName()),
                 $this->validateFullName($user->getFullName()),
                 $this->validatePassword($user->getPassword()),
+                $this->validateRole($user)
+            ),
+
+            Action::EDIT => array_merge(
+                $this->validateUserName($user->getUserName()),
+                $this->validateFullName($user->getFullName()),
+                ($user->getPassword() != null) ? $this->validatePassword($user->getPassword()) : [],
                 $this->validateRole($user)
             ),
 

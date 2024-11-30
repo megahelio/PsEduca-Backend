@@ -1,8 +1,5 @@
 <?php
 
-use exception\NotFoundException;
-use exception\ValidationException;
-
 require_once __DIR__ . "/../model/User.php";
 require_once __DIR__ . "/../mapper/UserMapper.php";
 require_once __DIR__ . "/../core/Validator.php";
@@ -35,7 +32,7 @@ class UserService {
         Validator::validate($user, Action::LOGIN);
 
         // Get the user info from the database
-        $user = $this->userMapper->getUserInfoFromUserName($userName);
+        $user = $this->userMapper->getUserInfoFromUserName($userName, true);
 
         if ($user != null) {
 
@@ -89,22 +86,19 @@ class UserService {
      */
     public function edit(?string $id, ?string $userName, ?string $fullName, ?string $password, ?string $strRole): User
     {
-
         $user = $this->get($id);
 
         // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
         if ($userName != null) $user->setUserName($userName);
         if ($fullName != null) $user->setFullName($fullName);
-        if ($password != null) $user->setPassword($password);
+        $user->setPassword($password); // Salvo para auth, este campo es nulo, por lo que nos podemos ahorrar la comprobación
         if ($strRole != null) $user->setRole($strRole);
 
         Validator::validate($user, Action::EDIT);
 
-        if ($this->userMapper->edit($user)) {
-            return $user;
-        } else {
-            throw new NotFoundException();
-        }
+        $this->userMapper->edit($user);
+
+        return $user;
     }
 
     /**

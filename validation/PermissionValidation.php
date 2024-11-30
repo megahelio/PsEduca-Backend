@@ -1,18 +1,5 @@
 <?php
 
-namespace validation;
-
-use Action;
-use BaseController;
-use Exception;
-use exception\ValidationException;
-use JWT;
-use Model;
-use ResponseCodes;
-use User;
-use UserMapper;
-use UserRole;
-
 class PermissionValidation
 {
     private static array $permissions = [
@@ -107,7 +94,7 @@ class PermissionValidation
                 $jwt_instance = new JWT();
                 $decoded_array = $jwt_instance->decode($token);
 
-                $user = $this->userMapper->getUserInfo($decoded_array["sub"]);
+                $user = $this->userMapper->getUserInfo($decoded_array["sub"], true);
                 if ($user != null) {
                     return $user;
                 } else {

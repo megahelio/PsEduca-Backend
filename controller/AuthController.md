@@ -27,17 +27,17 @@ Se requiere enviar los siguientes campos:
 
 ##### Códigos:
 
-| Tipo   | Código                           | Descripción                                                                                           |
-|--------|----------------------------------|-------------------------------------------------------------------------------------------------------|
-| Éxito  | `RECORDSET_DATA`                 | Datos recuperados correctamente.                                                                      |
-| Error  | `USER_CREDENTIALS_INVALID_KO`    | Las credenciales de usuario no son válidas. No se ha encontrado un usuaario y contraseña coincidentes.|
-| Error  | `INTERNAL_SERVER_ERROR_KO`       | Error interno del servidor (o de Base de datos).                                                      |
-| Error  | `NOMBRE_USUARIO_MINIMO_F_KO`     | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                        |
-| Error  | `NOMBRE_USUARIO_MAXIMO_F_KO`     | nombre_usuario no cumple longitud máxima (máximo 254 caracteres)                                      |
-| Error  | `NOMBRE_USUARIO_CARACTERES_F_KO` | nombre_usuario no cumple caracteres (solo a-z, A-Z, -, _, 0-9)                                        |
-| Error  | `CONTRASENHA_MINIMO_F_KO`        | contrasenha no cumple longitud mínima (mínimo 4 caracteres)                                           |
-| Error  | `CONTRASENHA_MAXIMO_F_KO`        | contrasenha no cumple longitud máxima (máximo 254 caracteres)                                         |
-| Error  | `CONTRASENHA_CARACTERES_F_KO`    | contrasenha no cumple caracteres (solo a-z, A-Z, -, _, 0-9, $, @, (, ), ., +, =, /)                   |
+| Tipo  | Código                           | Descripción                                                                                            |
+|-------|----------------------------------|--------------------------------------------------------------------------------------------------------|
+| Éxito | `RECORDSET_DATA`                 | Datos recuperados correctamente.                                                                       |
+| Error | `USER_CREDENTIALS_INVALID_KO`    | Las credenciales de usuario no son válidas. No se ha encontrado un usuaario y contraseña coincidentes. |
+| Error | `INTERNAL_SERVER_ERROR_KO`       | Error interno del servidor (o de Base de datos).                                                       |
+| Error | `NOMBRE_USUARIO_MINIMO_F_KO`     | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                         |
+| Error | `NOMBRE_USUARIO_MAXIMO_F_KO`     | nombre_usuario no cumple longitud máxima (máximo 254 caracteres)                                       |
+| Error | `NOMBRE_USUARIO_CARACTERES_F_KO` | nombre_usuario no cumple caracteres (solo a-z, A-Z, -, _, 0-9)                                         |
+| Error | `CONTRASENHA_MINIMO_F_KO`        | contrasenha no cumple longitud mínima (mínimo 4 caracteres)                                            |
+| Error | `CONTRASENHA_MAXIMO_F_KO`        | contrasenha no cumple longitud máxima (máximo 254 caracteres)                                          |
+| Error | `CONTRASENHA_CARACTERES_F_KO`    | contrasenha no cumple caracteres (solo a-z, A-Z, -, _, 0-9, $, @, (, ), ., +, =, /)                    |
 
 ##### Ejemplo de respuesta exitosa (status 200):
 

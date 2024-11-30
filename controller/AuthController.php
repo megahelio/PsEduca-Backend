@@ -1,7 +1,5 @@
 <?php
 
-use exception\ValidationException;
-
 require_once __DIR__ . "/BaseController.php";
 require_once __DIR__ . "/../core/ResponseCodes.php";
 
@@ -33,7 +31,7 @@ class AuthController extends BaseController
             ));
         } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
-        } catch (\exception\NotFoundException) {
+        } catch (NotFoundException) {
             parent::generateHttpResponse(404, array(ResponseCodes::USER_CREDENTIALS_INVALID_KO));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));

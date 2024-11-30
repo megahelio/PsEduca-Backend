@@ -1,7 +1,5 @@
 <?php
 
-use exception\ValidationException;
-
 class JWT
 {
     /**
@@ -9,14 +7,14 @@ class JWT
      *
      * @var array
      */
-    private $headers;
+    private array $headers;
 
     /**
      * Secret for JWT.
      *
      * @var string
      */
-    private $secret;
+    private string $secret;
 
     public function __construct()
     {
@@ -93,14 +91,6 @@ class JWT
         } else {
             throw new ValidationException(array(ResponseCodes::AUTHENTICATION_INVALID_KO));
         }
-
-//        if (isset(json_decode($payload)->aud)) {
-//            if (json_decode($headers)->aud != json_decode($payload)->aud) {
-//                return false; // fails if audiences are not the same
-//            }
-//        } else {
-//            return false; // fails if audience is not set
-//        }
 
         $base64_header = $this->encode($headers);
         $base64_payload = $this->encode($payload);

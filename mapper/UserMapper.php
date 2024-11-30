@@ -35,7 +35,7 @@ class UserMapper {
      * @param string $userName string the username of the user to get
      * @return User|null the user info
      */
-    public function getUserInfoFromUserName(string $userName) : ?User
+    public function getUserInfoFromUserName(string $userName, bool $bringPassword = false) : ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE nombre_usuario= :nombre_usuario");
         $stmt->execute(array(
@@ -44,7 +44,7 @@ class UserMapper {
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
-            return $this->userFromRow($data);
+            return $this->userFromRow($data, $bringPassword);
         }
         return null;
     }
@@ -54,7 +54,7 @@ class UserMapper {
      * @param int $userId the id of the user to get
      * @return User|null the user info
      */
-    public function getUserInfo (int $userId) : ?User
+    public function getUserInfo (int $userId, bool $bringPassword = false) : ?User
     {
         $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE id= :id");
         $stmt->execute(array(
@@ -63,7 +63,7 @@ class UserMapper {
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
-            return $this->userFromRow($data);
+            return $this->userFromRow($data, $bringPassword);
         }
         return null;
     }
@@ -98,19 +98,32 @@ class UserMapper {
         return $user;
 	}
 
-    public function edit(User $user) : bool
-    {
-        $stmt = $this->db->prepare("UPDATE usuarios SET nombre_usuario=:nombre_usuario, nombre_completo=:nombre_completo,
-                    contrasenha=:contrasenha, rol=:rol WHERE id=:id");
-        $stmt->execute(array(
+    public function edit(User $user): void {
+
+        $sql = "UPDATE usuarios SET 
+                nombre_usuario = :nombre_usuario, 
+                nombre_completo = :nombre_completo, 
+                rol = :rol";
+
+        $params = [
             ':id' => $user->getId(),
             ':nombre_usuario' => $user->getUserName(),
             ':nombre_completo' => $user->getFullName(),
-            ':contrasenha' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
             ':rol' => $user->getRole()->name
-        ));
-        return $stmt->rowCount() == 1;
+        ];
+
+        // Agregar contraseña si está definida y no es nula
+        if ($user->getPassword()) {
+            $sql .= ", contrasenha = :contrasenha";
+            $params[':contrasenha'] = password_hash($user->getPassword(), PASSWORD_BCRYPT);
+        }
+
+        $sql .= " WHERE id = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
     }
+
 
     /**
      * Deletes a user from the database
@@ -169,11 +182,11 @@ class UserMapper {
         return false;
     }
 
-    private function userFromRow($row): User {
+    private function userFromRow($row, bool $bringPassword = false): User {
         return new User(
             $row['id'],
             $row['nombre_usuario'],
-            $row['contrasenha'],
+            $bringPassword? $row['contrasenha'] : null,
             UserRole::from($row['rol']),
             $row['nombre_completo']);
     }

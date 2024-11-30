@@ -115,10 +115,10 @@ class User
     /**
      * Sets the password of this user
      *
-     * @param string $password The password of this user
+     * @param string|null $password The password of this user
      * @return void
      */
-    public function setPassword(string $password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }

@@ -4,8 +4,6 @@ require_once(__DIR__ . "/BaseController.php");
 require_once (__DIR__ . "/../core/ResponseCodes.php");
 require_once(__DIR__ . "/../service/MailService.php");
 
-use exception\ValidationException;
-
 class ContactController extends BaseController {
 
     private MailService $mailService;

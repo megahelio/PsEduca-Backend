@@ -1,9 +1,6 @@
 <?php
 //file: core/ValidationException.php
 
-namespace exception;
-use Exception;
-
 /**
  * Class ValidationException
  *

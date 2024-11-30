@@ -3,8 +3,6 @@
 require_once __DIR__ . "/../model/Mail.php";
 require_once __DIR__ . "/../core/mail/MailSender.php";
 
-use exception\ValidationException;
-
 class MailService
 {
 
