@@ -9,6 +9,7 @@ use exception\ValidationException;
 enum Model: string
 {
     case User = "User";
+    case Mail = "Mail";
 }
 
 enum Action
@@ -51,26 +52,26 @@ class Validator {
         $formatValidatorFilePath = __DIR__ . "/../validation/format/$formatValidatorClassName.php";
         $actionValidatorFilePath = __DIR__ . "/../validation/action/$actionValidatorClassName.php";
 
-        require_once $formatValidatorFilePath;
-        require_once $actionValidatorFilePath;
+        if (file_exists($formatValidatorFilePath)) {
+            require_once $formatValidatorFilePath;
+            $formatValidator = new $formatValidatorClassName();
 
-        $formatValidator = new $formatValidatorClassName();
-        $actionValidator = new $actionValidatorClassName();
+            $errors = $formatValidator->validate($action, $object);
 
-        $errors = $formatValidator->validate($action, $object);
-
-        // Si hay errores de formato, no se valida la acción
-        if ($errors) {
-            throw new ValidationException($errors);
+            // Si hay errores de formato, no se valida la acción
+            if ($errors) {
+                throw new ValidationException($errors);
+            }
         }
+        if (file_exists($actionValidatorFilePath)) {
+            require_once $actionValidatorFilePath;
+            $actionValidator = new $actionValidatorClassName();
 
-        $errors = array_merge(
-            $errors,
-            $actionValidator->validate($action, $object)
-        );
+            $errors = $actionValidator->validate($action, $object);
 
-        if ($errors) {
-            throw new ValidationException($errors);
+            if ($errors) {
+                throw new ValidationException($errors);
+            }
         }
     }
 

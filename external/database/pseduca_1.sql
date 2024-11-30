@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
     `nombre_completo` varchar(255) DEFAULT NULL,
     `contrasenha` varchar(255) NOT NULL,
     `rol` enum('ADMIN_GLOBAL','GESTOR_CATALOGO','USUARIO_PYP') NOT NULL,
-    `ultima_modificacion_contrasenha` datetime NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),
     UNIQUE KEY `usuarios_pk` (`nombre_usuario`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

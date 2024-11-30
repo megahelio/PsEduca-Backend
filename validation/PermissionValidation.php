@@ -24,6 +24,9 @@ class PermissionValidation
             Action::DELETE->name => UserRole::ADMIN_GLOBAL,
             Action::LOGIN->name => true
         ],
+        Model::Mail->name => [
+            Action::SEND->name => true
+        ],
 //        'Member' => [
 //            Action::GET->name => true,
 //            Action::LIST->name => true,
@@ -34,7 +37,7 @@ class PermissionValidation
     ];
 
     private static array $roleHierarchy = [
-        UserRole::ADMIN_GLOBAL->name => [UserRole::ADMIN_GLOBAL], // Admin global puede hacer todo
+        UserRole::ADMIN_GLOBAL->name => [UserRole::ADMIN_GLOBAL], // Admin global puede hacer cualquier cosa
         UserRole::GESTOR_CATALOGO->name => [UserRole::GESTOR_CATALOGO, UserRole::ADMIN_GLOBAL], // Gestor y admin global
         UserRole::USUARIO_PYP->name => [UserRole::USUARIO_PYP, UserRole::ADMIN_GLOBAL], // Usuario y admin global
     ];
