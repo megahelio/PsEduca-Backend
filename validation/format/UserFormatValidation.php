@@ -59,7 +59,9 @@ class UserFormatValidation {
     private function validateFullName(?string $fullName): array {
         $errors = [];
         if (!empty($fullName)) {
-            if (strlen($fullName) > 254) {
+            if (strlen($fullName) < 4) {
+                $errors[] = 'NOMBRE_COMPLETO_MINIMO_F_KO';
+            } elseif (strlen($fullName) > 254) {
                 $errors[] = 'NOMBRE_COMPLETO_MAXIMO_F_KO';
             } elseif (!preg_match('/^[a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑªº ]+$/', $fullName)) {
                 $errors[] = 'NOMBRE_COMPLETO_CARACTERES_F_KO';

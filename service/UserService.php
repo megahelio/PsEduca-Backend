@@ -90,7 +90,7 @@ class UserService {
 
         // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
         if ($userName != null) $user->setUserName($userName);
-        if ($fullName != null) $user->setFullName($fullName);
+        $user->setFullName($fullName); // Este campo puede ser nulo, por lo que no es necesario comprobarlo
         $user->setPassword($password); // Salvo para auth, este campo es nulo, por lo que nos podemos ahorrar la comprobación
         if ($strRole != null) $user->setRole($strRole);
 

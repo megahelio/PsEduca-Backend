@@ -154,10 +154,10 @@ class User
     /**
      * Sets the email of this user
      *
-     * @param string $fullName The password of this user
+     * @param string|null $fullName The password of this user
      * @return void
      */
-    public function setFullName(string $fullName): void
+    public function setFullName(?string $fullName): void
     {
         $this->fullName = empty($fullName) ? null : $fullName;
     }

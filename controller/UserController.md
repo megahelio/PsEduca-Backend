@@ -22,18 +22,20 @@ de formato se encuentran en la siguiente tabla:
 evitar enguarrar el documento. Las APIs podrán devolver errores de formato siempre que se envíe un elemento que no 
 cumple el formato o no se envíe y sea obligatorio.
 
-| Tipo   | Código                            | Descripción                                                                                            |
-|--------|-----------------------------------|--------------------------------------------------------------------------------------------------------|
-| Error  | `NOMBRE_USUARIO_MINIMO_F_KO`      | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                         |
-| Error  | `NOMBRE_USUARIO_MAXIMO_F_KO`      | nombre_usuario no cumple longitud máxima (máximo 254 caracteres)                                       |
-| Error  | `NOMBRE_USUARIO_CARACTERES_F_KO`  | nombre_usuario no cumple caracteres (solo a-z, A-Z, -, _, 0-9)                                         |
-| Error  | `NOMBRE_COMPLETO_MINIMO_F_KO`     | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                         |
-| Error  | `NOMBRE_COMPLETO_MAXIMO_F_KO`     | nombre_completo no cumple longitud máxima (máximo 254 caracteres)                                      |
-| Error  | `NOMBRE_COMPLETO_CARACTERES_F_KO` | nombre_completo no cumple caracteres (solo a-z, ñ, A-Z, Ñ, -, _, 0-9, áéíóú, ÁÉÍÓÚ, espacio, ª, º)     |
-| Error  | `CONTRASENHA_MINIMO_F_KO`         | contrasenha no cumple longitud mínima (mínimo 4 caracteres)                                            |
-| Error  | `CONTRASENHA_MAXIMO_F_KO`         | contrasenha no cumple longitud máxima (máximo 254 caracteres)                                          |
-| Error  | `CONTRASENHA_CARACTERES_F_KO`     | contrasenha no cumple caracteres (solo a-z, A-Z, -, _, 0-9, $, @, (, ), ., +, =, /)                    |
-| Error  | `ROL_F_KO`                        | rol no cumple con los valores permitidos (ADMIN_GLOBAL, GESTOR_CATALOGO, USUARIO_PYP)                  |
+| Tipo  | Código                           | Descripción                                                                                      |
+|-------|----------------------------------|--------------------------------------------------------------------------------------------------|
+| Error | `ID_MINIMO_F_KO`                 | id no cumple que sea un número >= 0                                                              |
+| Error | `ID_INVALIDO_F_KO`               | id no cumple que es número positivo                                                              |
+| Error | `NOMBRE_USUARIO_MINIMO_F_KO`     | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                   |
+| Error | `NOMBRE_USUARIO_MAXIMO_F_KO`     | nombre_usuario no cumple longitud máxima (máximo 254 caracteres)                                 |
+| Error | `NOMBRE_USUARIO_CARACTERES_F_KO` | nombre_usuario no cumple caracteres (solo a-z, A-Z, -, _, 0-9)                                   |
+| Error | `NOMBRE_COMPLETO_MINIMO_F_KO`    | nombre_usuario no cumple longitud mínima (mínimo 4 caracteres)                                   |
+| Error | `NOMBRE_COMPLETO_MAXIMO_F_KO`    | nombre_completo no cumple longitud máxima (máximo 254 caracteres)                                |
+| Error | `NOMBRE_COMPLETO_CARACTERES_F_KO`| nombre_completo no cumple caracteres (solo a-z, ñ, A-Z, Ñ, -, _, 0-9, áéíóú, ÁÉÍÓÚ, espacio, ª, º) |
+| Error | `CONTRASENHA_MINIMO_F_KO`        | contrasenha no cumple longitud mínima (mínimo 4 caracteres)                                      |
+| Error | `CONTRASENHA_MAXIMO_F_KO`        | contrasenha no cumple longitud máxima (máximo 254 caracteres)                                    |
+| Error | `CONTRASENHA_CARACTERES_F_KO`    | contrasenha no cumple caracteres (solo a-z, A-Z, -, _, 0-9, $, @, (, ), ., +, =, /)              |
+| Error | `ROL_F_KO`                       | rol no cumple con los valores permitidos (ADMIN_GLOBAL, GESTOR_CATALOGO, USUARIO_PYP)            |
 
 Nota: Para más información sobre los errores de formato, consultar la documentación de formato en la carpeta `validation/format`.
 
