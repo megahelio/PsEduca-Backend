@@ -18,6 +18,9 @@ const MAIL_PORT = 587;
 
 const CONTACT_DESTINATION_DIR = 'correoDeSenhoran@uvigo.es';
 
+// File upload settings
+const UPLOAD_FOLDER = "uploads/";
+
 //const MAIL_USER_NAME = 'pseduca@outlook.es';
 //const MAIL_PASSWORD = 'EseiSoftwareSL2024';
 //const MAIL_HOST = 'smtp.office365.com';

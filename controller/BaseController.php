@@ -13,6 +13,33 @@ require_once(__DIR__ . "/../service/UserService.php");
 class BaseController {
 
     /**
+     * @param array $data
+     * @param string $key
+     * @return string|null
+     */
+    protected static function extractString(array $data, string $key): ?string
+    {
+        return $data[$key] ?? null;
+    }
+
+    /**
+     * @return File|null
+     */
+    protected function extractFile(): ?File
+    {
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['image']['tmp_name'];// Ruta temporal del archivo
+            $fileName = $_FILES['image']['name'];// Nombre original del archivo
+            $fileSize = $_FILES['image']['size'];// Tamaño del archivo
+            $fileType = $_FILES['image']['type'];// Tipo MIME del archivo
+            return new File($fileTmpPath, $fileName, null, $fileSize, $fileType);
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
      * Genera y envía una respuesta JSON con un código HTTP específico.
      *
      * @param int $httpCode Código de respuesta HTTP.

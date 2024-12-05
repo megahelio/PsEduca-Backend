@@ -89,10 +89,10 @@ class UserService {
         $user = $this->get($id);
 
         // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
-        if ($userName != null) $user->setUserName($userName);
-        $user->setFullName($fullName); // Este campo puede ser nulo, por lo que no es necesario comprobarlo
-        $user->setPassword($password); // Salvo para auth, este campo es nulo, por lo que nos podemos ahorrar la comprobación
-        if ($strRole != null) $user->setRole($strRole);
+        if (!is_null($userName)) $user->setUserName($userName ?: null);
+        if (!is_null($fullName)) $user->setFullName($fullName ?: null);
+        if (!is_null($password)) $user->setPassword($password ?: null);
+        if (!is_null($strRole)) $user->setRole($strRole ?: null);
 
         Validator::validate($user, Action::EDIT);
 
@@ -117,7 +117,7 @@ class UserService {
     }
 
     /**
-     * @param string|null $userId el id del usuario a obtener
+     * @param string|null $userId id del usuario a obtener
      * @return User
      * @throws NotFoundException
      * @throws ReflectionException

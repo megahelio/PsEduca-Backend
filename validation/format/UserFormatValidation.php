@@ -1,118 +1,108 @@
 <?php
-class UserFormatValidation {
 
-    private array $errors;
+require_once __DIR__ . "/BaseFormatValidation.php";
+
+class UserFormatValidation extends BaseFormatValidation {
 
     public function __construct() {
-        $this->errors = [];
-    }
-
-    // Obtener errores
-    public function getErrors(): array {
-        return $this->errors;
+        parent::__construct();
     }
 
     public function validate(Action $action, User $user): array {
-        $this->errors = match ($action) {
+        $this->resetErrors();
 
-            Action::GET, Action::DELETE => $this->validateId($user->getId()),
+        switch ($action) {
 
-            Action::ADD => array_merge(
-                $this->validateUserName($user->getUserName()),
-                $this->validateFullName($user->getFullName()),
-                $this->validatePassword($user->getPassword()),
-                $this->validateRole($user)
-            ),
+            case Action::GET:
+            case Action::DELETE:
 
-            Action::EDIT => array_merge(
-                $this->validateUserName($user->getUserName()),
-                $this->validateFullName($user->getFullName()),
-                ($user->getPassword() != null) ? $this->validatePassword($user->getPassword()) : [],
-                $this->validateRole($user)
-            ),
+                $this->validateId($user->getId());
+                break;
 
-            Action::LOGIN => array_merge(
-                $this->validateUserName($user->getUserName()),
-                $this->validatePassword($user->getPassword())
-            ),
+            case Action::ADD:
 
-            default => [],
-        };
+                $this->validateUserName($user->getUserName());
+                $this->validateFullName($user->getFullName());
+                $this->validatePassword($user->getPassword(), false);
+                $this->validateRole($user);
 
-        return $this->errors;
+                break;
+
+            case Action::EDIT:
+
+                $this->validateUserName($user->getUserName());
+                $this->validateFullName($user->getFullName());
+                $this->validatePassword($user->getPassword(), true);
+                $this->validateRole($user);
+                break;
+
+            case Action::LOGIN:
+
+                $this->validateUserName($user->getUserName());
+                $this->validatePassword($user->getPassword(), false);
+                break;
+
+            default:
+                break;
+        }
+
+        return $this->getErrors();
     }
 
     // Validar nombre_usuario
-    private function validateUserName(?string $userName): array {
-        $errors = [];
+    private function validateUserName(?string $userName): void
+    {
         if (strlen($userName ?? "") < 4) {
-            $errors[] = 'NOMBRE_USUARIO_MINIMO_F_KO';
+            $this->addError('NOMBRE_USUARIO_MINIMO_F_KO');
         } elseif (strlen($userName) > 254) {
-            $errors[] = 'NOMBRE_USUARIO_MAXIMO_F_KO';
+            $this->addError('NOMBRE_USUARIO_MAXIMO_F_KO');
         } elseif (!preg_match('/^[a-zA-Z0-9_\-]+$/', $userName)) {
-            $errors[] = 'NOMBRE_USUARIO_CARACTERES_F_KO';
+            $this->addError('NOMBRE_USUARIO_CARACTERES_F_KO');
         }
-        return $errors;
     }
 
     // Validar nombre_completo
-    private function validateFullName(?string $fullName): array {
-        $errors = [];
+    private function validateFullName(?string $fullName): void
+    {
         if (!empty($fullName)) {
             if (strlen($fullName) < 4) {
-                $errors[] = 'NOMBRE_COMPLETO_MINIMO_F_KO';
+                $this->addError('NOMBRE_COMPLETO_MINIMO_F_KO');
             } elseif (strlen($fullName) > 254) {
-                $errors[] = 'NOMBRE_COMPLETO_MAXIMO_F_KO';
+                $this->addError('NOMBRE_COMPLETO_MAXIMO_F_KO');
             } elseif (!preg_match('/^[a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑªº ]+$/', $fullName)) {
-                $errors[] = 'NOMBRE_COMPLETO_CARACTERES_F_KO';
+                $this->addError('NOMBRE_COMPLETO_CARACTERES_F_KO');
             }
         }
-        return $errors;
     }
 
     // Validar contrasenha
-    private function validatePassword(?string $password): array {
-        $errors = [];
-        if (strlen($password ?? "") < 4) {
-            $errors[] = 'CONTRASENHA_MINIMO_F_KO';
-        } elseif (strlen($password) > 254) {
-            $errors[] = 'CONTRASENHA_MAXIMO_F_KO';
-        } elseif (!preg_match('/^[a-zA-Z0-9_\-\$@()\.\+=\/]+$/', $password)) {
-            $errors[] = 'CONTRASENHA_CARACTERES_F_KO';
+    private function validatePassword(?string $password, bool $allowedEmpty): void {
+        if (!$allowedEmpty || !empty($password)) {
+            if (strlen($password ?? "") < 4) {
+                $this->addError('CONTRASENHA_MINIMO_F_KO');
+            } elseif (strlen($password) > 254) {
+                $this->addError('CONTRASENHA_MAXIMO_F_KO');
+            } elseif (!preg_match('/^[a-zA-Z0-9_\-\$@()\.\+=\/]+$/', $password)) {
+                $this->addError('CONTRASENHA_CARACTERES_F_KO');
+            }
         }
-        return $errors;
     }
 
     // Validar rol
-    private function validateRole(User $user): array {
-        $errors = [];
-
+    private function validateRole(User $user): void
+    {
         $role = $user->getRole();
         if (!$role instanceof UserRole) {
             if (is_string($role)) {
                 $role = UserRole::tryFrom($role);
                 if ($role === null) {
-                    $errors[] = 'ROL_F_KO';
+                    $this->addError('ROL_F_KO');
                 } else {
                     $user->setRole($role);
                 }
             } else {
-                $errors[] = 'ROL_F_KO';
+                $this->addError('ROL_F_KO');
             }
         }
-
-        return $errors;
-    }
-
-    private function validateId(?string $id): array {
-        $errors = [];
-        if (strlen($id ?? "") < 1) {
-            $errors[] = 'ID_MINIMO_F_KO';
-        } elseif (!is_numeric($id)) {
-            $errors[] = 'ID_INVALIDO_F_KO';
-        } elseif (intval($id) < 1) {
-            $errors[] = 'ID_INVALIDO_F_KO';
-        }
-        return $errors;
     }
 }

@@ -1,0 +1,82 @@
+<?php
+
+class BaseFormatValidation
+{
+
+    private array $errors;
+
+    public function __construct() {
+        $this->errors = [];
+    }
+
+    public function resetErrors(): void {
+        $this->errors = [];
+    }
+
+    // Obtener errores
+    public function getErrors(): array {
+        return $this->errors;
+    }
+
+    // Añadir error a los existentes
+    public function addError(string $error): void
+    {
+        $this->errors[] =  $error;
+    }
+
+    // Validar id
+    protected function validateId(?string $id): void
+    {
+        if (strlen($id ?? "") < 1) {
+            $this->addError('ID_MINIMO_F_KO');
+        } elseif (!is_numeric($id)) {
+            $this->addError('ID_INVALIDO_F_KO');
+        } elseif (intval($id) < 1) {
+            $this->addError('ID_INVALIDO_F_KO');
+        }
+    }
+
+    // Validar email_emisor
+    protected function validateEmail(?string $email, bool $allowedEmpty): void
+    {
+        if (!$allowedEmpty || !empty($email)){
+//            if (strlen($email) < 4) {
+//                $this->addError('EMAIL_MINIMO_F_KO');
+//            } elseif (strlen($email) > 254) {
+//                $this->addError('EMAIL_MAXIMO_F_KO');
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//                $this->addError('EMAIL_EMISOR_INVALIDO_F_KO');
+                $this->addError('EMAIL_INVALIDO_F_KO'); // todo: provisionalmente se usa el nuevo error. Pendiente de revisar lo que quiere Jose
+            }
+        }
+    }
+
+    // Validar imagen
+    protected function validateFile(?File $file, array $allowedMimeTypes, int $maxFileSize): void
+    {
+        if ($file) {
+            if ($file->getFileSize() > $maxFileSize) {
+                $this->addError('FICHERO_TAMAÑO_F_KO');
+            }
+
+            if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+                $this->addError('FICHERO_FORMATO_F_KO');
+            }
+        }
+    }
+
+    // Validar link de recurso (URL)
+    protected function validateLink(?string $link, bool $allowedEmpty): void
+    {
+        if (!$allowedEmpty || !empty($link)) {
+            if (strlen($link) < 4) {
+                $this->addError('LINK_MINIMO_F_KO');
+            } elseif (strlen($link) > 254) {
+                $this->addError('LINK_MAXIMO_F_KO');
+            } elseif (!filter_var($link, FILTER_VALIDATE_URL)) {
+                $this->addError('LINK_INVALIDO_F_KO');
+            }
+        }
+    }
+
+}
