@@ -32,7 +32,6 @@ class MembersService
     }
 
     /**
-     * @throws FileException
      * @throws ReflectionException
      * @throws ValidationException
      * @throws NotFoundException
@@ -53,7 +52,6 @@ class MembersService
 
     /**
      * @throws ReflectionException
-     * @throws FileException
      * @throws ValidationException
      */
     public function list(): array
@@ -87,7 +85,6 @@ class MembersService
     /**
      * @throws NotFoundException
      * @throws ReflectionException
-     * @throws FileException
      * @throws ValidationException
      */
     public function delete(?string $id): void

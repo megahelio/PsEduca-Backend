@@ -29,6 +29,7 @@ class UserService {
     public function login(?string $userName, ?string $userPassword): array
     {
         $user = new User(null, $userName, $userPassword, null, null);
+
         Validator::validate($user, Action::LOGIN);
 
         // Get the user info from the database
