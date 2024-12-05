@@ -156,7 +156,11 @@ class MemberController extends BaseController
                 );
             }
 
-            parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), $membersData);
+            if ($membersData == []) {
+                parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_EMPTY));
+            } else {
+                parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), $membersData);
+            }
 
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));

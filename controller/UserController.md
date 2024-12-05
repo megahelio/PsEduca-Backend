@@ -288,11 +288,11 @@ Se requiere enviar los siguientes campos:
 
 A estos errores, hay que sumar los de formato y los de permisos (si procede).
 
-| Tipo   | Código                          | Descripción                                                               |
-|--------|---------------------------------|---------------------------------------------------------------------------|
-| Éxito  | `RECORDSET_DATA`                | Datos recuperados correctamente.                                          |
-| Error  | `USUARIO_NO_ENCONTRADO_A_KO`    | El usuario a editar no ha sido encontrado.                                |
-| Error  | `INTERNAL_SERVER_ERROR_KO`      | Error interno del servidor (o de Base de datos).                          |
+| Tipo   | Código                          | Descripción                                      |
+|--------|---------------------------------|--------------------------------------------------|
+| Éxito  | `RECORDSET_DATA`                | Datos recuperados correctamente.                 |
+| Error  | `USUARIO_NO_ENCONTRADO_A_KO`    | El usuario a eliminar no ha sido encontrado.     |
+| Error  | `INTERNAL_SERVER_ERROR_KO`      | Error interno del servidor (o de Base de datos). |
 
 ##### Ejemplo de respuesta exitosa (status 200):
 
@@ -384,11 +384,11 @@ Se requiere enviar los siguientes campos:
 
 A estos errores, hay que sumar los de formato y los de permisos (si procede).
 
-| Tipo   | Código                          | Descripción                                                               |
-|--------|---------------------------------|---------------------------------------------------------------------------|
-| Éxito  | `RECORDSET_DATA`                | Datos recuperados correctamente.                                          |
-| Error  | `USUARIO_NO_ENCONTRADO_A_KO`    | El usuario a editar no ha sido encontrado.                                |
-| Error  | `INTERNAL_SERVER_ERROR_KO`      | Error interno del servidor (o de Base de datos).                          |
+| Tipo   | Código                          | Descripción                                      |
+|--------|---------------------------------|--------------------------------------------------|
+| Éxito  | `RECORDSET_DATA`                | Datos recuperados correctamente.                 |
+| Error  | `USUARIO_NO_ENCONTRADO_A_KO`    | El usuario a recuperar no ha sido encontrado.    |
+| Error  | `INTERNAL_SERVER_ERROR_KO`      | Error interno del servidor (o de Base de datos). |
 
 ##### Ejemplo de respuesta exitosa (status 200):
 
@@ -469,7 +469,7 @@ error relacionados.
 
 ##### URL
 La URL de acceso es:
-http://localhost/PsEduca-Backend/?controller=user&action=get
+http://localhost/PsEduca-Backend/?controller=user&action=list
 
 Únicamente se aceptará envío mediante método **POST** y utilizando **form-data**.
 Las respuestas serán siempre en formato **JSON**.
@@ -481,7 +481,7 @@ No se requiere enviar campos.
 
 ##### Códigos:
 
-A estos errores, hay que sumar los de formato y los de permisos (si procede).
+A estos errores, hay que sumar los de permisos (si procede).
 
 | Tipo   | Código                     | Descripción                                                               |
 |--------|----------------------------|---------------------------------------------------------------------------|

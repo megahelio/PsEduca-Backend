@@ -61,9 +61,9 @@ class MemberFormatValidation extends BaseFormatValidation {
         if (!empty($description)) {
             if (strlen($description) < 4) {
                 $this->addError('DESCRIPCION_MINIMO_F_KO');
-            } elseif (strlen($description) > 254) {
+            } elseif (strlen($description) > 1000) {
                 $this->addError('DESCRIPCION_MAXIMO_F_KO');
-            } elseif (!preg_match('/^[\s\S]*$/', $description)) {
+            } elseif (!preg_match('/^[^\a]*$/', $description)) {
                 $this->addError('DESCRIPCION_CARACTERES_F_KO');
             }
         }

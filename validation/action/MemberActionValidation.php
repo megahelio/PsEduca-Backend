@@ -44,7 +44,7 @@ class MemberActionValidation {
     private function validateMemberExists(int $memberId): array {
         $errors = [];
         if (!$this->memberMapper->memberExists($memberId)) {
-            $errors[] = 'USUARIO_NO_ENCONTRADO_A_KO';
+            $errors[] = 'MIEMBRO_NO_ENCONTRADO_A_KO';
         }
         return $errors;
     }

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../core/config_file.php";
+require_once __DIR__ . "/../core/config_file.php";
 
 // Configuración inicial
 header("Content-Type: text/html; charset=UTF-8");
