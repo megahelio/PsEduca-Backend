@@ -45,6 +45,7 @@ class PermissionValidation
      */
     public function validate(Model $model, Action $action): array
     {
+
         if (!array_key_exists($model->name, self::$permissions)) {
             throw new Exception("Model not found in PermissionValidation");
         }

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . "/BaseFormatTest.php";
+
 class MemberFormatTest extends BaseFormatTest
 {
     private string $validToken;
@@ -9,7 +11,7 @@ class MemberFormatTest extends BaseFormatTest
     {
         parent::__construct($validToken, $testUserId);
         $this->validToken = $validToken;
-        $this->testMemberId = $this->insertTestData();
+        $this->insertTestData();
     }
 
     /**
@@ -187,7 +189,7 @@ class MemberFormatTest extends BaseFormatTest
     /**
      * @throws Exception
      */
-    private function insertTestData(): string
+    public function insertTestData(): string
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         $url = $serverURL . "?controller=member&action=add";
@@ -208,7 +210,8 @@ class MemberFormatTest extends BaseFormatTest
 
         echo "Miembro de prueba insertado con id " . $responseBody['resource']['id'] . ".\n ";
 
-        return $responseBody['resource']['id'];
+        $this->testMemberId = $responseBody['resource']['id'];
+        return $this->testMemberId;
     }
 
     /**

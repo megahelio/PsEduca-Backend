@@ -90,7 +90,9 @@ class MembersService
     public function delete(?string $id): void
     {
         $member = $this->get($id);
+
         Validator::validate($member, Action::DELETE);
+
         $this->memberMapper->delete($member);
     }
 

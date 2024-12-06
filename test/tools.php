@@ -29,6 +29,15 @@ function assertEquals($expected, $actual, $message = '') {
     }
 }
 
+function assertNotEquals($expected, $actual, $message = '') {
+    if ($expected === $actual) {
+        throw new Exception($message . " Se esperaba que los valores fueran distintos.");
+    }
+}
+{
+
+}
+
 function assertTrue($condition, $message = '') {
     if (!$condition) {
         throw new Exception($message ?: "Condition is not true.");

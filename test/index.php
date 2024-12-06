@@ -4,6 +4,7 @@ require_once __DIR__ . "/tools.php";
 require_once __DIR__ . "/../core/config_file.php";
 require_once __DIR__ . "/TestUser.php";
 
+require_once __DIR__ . "/permission/PermissionTest.php";
 require_once __DIR__ . "/format/BaseFormatTest.php";
 
 class ValidationTests
@@ -134,6 +135,12 @@ class ValidationTests
         <h1>Resultados de las pruebas</h1>
 
         <?php
+
+        // Test de permisos
+        $permissions = new PermissionTest($this->adminTestUser, $this->gestCatTestUser, $this->usuarioPYPTestUser);
+        $permissions->runTests();
+
+        // Test de formato
         $format = new BaseFormatTest($this->adminTestUser->getJwtToken(), $this->adminTestUser->getId());
         $format->runTests();
     }
