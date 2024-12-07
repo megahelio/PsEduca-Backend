@@ -26,7 +26,7 @@ class MemberFormatValidation extends BaseFormatValidation {
             case Action::ADD:
 
                 $this->validateName($member->getName());
-                $this->validateDescription($member->getDescription());
+                $this->validateDescription($member->getDescription(), true, 4, 1000);
                 $this->validateEmail($member->getEmail(), true);
                 $this->validateLink($member->getReferenceURL(), true);
                 $this->validateFile(
@@ -55,17 +55,4 @@ class MemberFormatValidation extends BaseFormatValidation {
         }
     }
 
-    // Validar descripción
-    private function validateDescription(?string $description): void
-    {
-        if (!empty($description)) {
-            if (strlen($description) < 4) {
-                $this->addError('DESCRIPCION_MINIMO_F_KO');
-            } elseif (strlen($description) > 1000) {
-                $this->addError('DESCRIPCION_MAXIMO_F_KO');
-            } elseif (!preg_match('/^[^\a]*$/', $description)) {
-                $this->addError('DESCRIPCION_CARACTERES_F_KO');
-            }
-        }
-    }
 }

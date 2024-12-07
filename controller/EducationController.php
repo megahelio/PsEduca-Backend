@@ -1,40 +1,43 @@
 <?php
 
 require_once __DIR__ . "/BaseController.php";
-require_once __DIR__ . "/../service/MembersService.php";
+require_once __DIR__ . "/../service/EducationService.php";
 require_once __DIR__ . "/../core/ResponseCodes.php";
 
-class MemberController extends BaseController
+class EducationController extends BaseController
 {
-    private MembersService $membersService;
+    private EducationService $educationService;
 
     public function __construct() {
-
-        $this->membersService = new MembersService();
+        $this->educationService = new EducationService();
     }
 
     public function add($data): void
     {
+        try{
 
-        try {
-            $name = parent::extractString($data, 'name');
-            $email = parent::extractString($data, 'email');
+            $type = parent::extractString($data, 'type');
+            $title = parent::extractString($data, 'title');
             $description = parent::extractString($data, 'description');
             $referenceURL = parent::extractString($data, 'referenceURL');
+            $initYear = parent::extractString($data, 'initYear');
+            $endYear = parent::extractString($data, 'endYear');
 
             $file = $this->extractFile();
 
-            $member = $this->membersService->add($name, $email, $description, $referenceURL, $file);
+            $educationItem = $this->educationService->add($type, $title, $description, $referenceURL, $initYear, $endYear, $file);
 
-            $fileName = $member->getImage()?->getStorageFileName();
-            $imageURL = $this->generateMemberImageURL($fileName);
+            $fileName = $educationItem->getImage()?->getStorageFileName();
+            $imageURL = $this->generateEducationItemImageURL($fileName);
 
             parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA), array(
-                "id" => $member->getId(),
-                "name" => $member->getName(),
-                "email" => $member->getEmail(),
-                "description" => $member->getDescription(),
-                "referenceURL" => $member->getReferenceURL(),
+                "id" => $educationItem->getId(),
+                "type" => $educationItem->getType(),
+                "title" => $educationItem->getTitle(),
+                "description" => $educationItem->getDescription(),
+                "referenceURL" => $educationItem->getReferenceURL(),
+                "initYear" => $educationItem->getInitYear(),
+                "endYear" => $educationItem->getEndYear(),
                 "imageURL" => $imageURL
             ));
 
@@ -42,8 +45,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -53,24 +55,28 @@ class MemberController extends BaseController
         try {
             $id = parent::extractString($data, 'id');
 
-            $name = parent::extractString($data, 'name');
-            $email = parent::extractString($data, 'email');
+            $type = parent::extractString($data, 'type');
+            $title = parent::extractString($data, 'title');
             $description = parent::extractString($data, 'description');
             $referenceURL = parent::extractString($data, 'referenceURL');
+            $initYear = parent::extractString($data, 'initYear');
+            $endYear = parent::extractString($data, 'endYear');
 
             $file = $this->extractFile();
 
-            $member = $this->membersService->edit($id, $name, $email, $description, $referenceURL, $file);
+            $educationItem = $this->educationService->edit($id, $type, $title, $description, $referenceURL, $initYear, $endYear, $file);
 
-            $fileName = $member->getImage()?->getStorageFileName();
-            $imageURL = $this->generateMemberImageURL($fileName);
+            $fileName = $educationItem->getImage()?->getStorageFileName();
+            $imageURL = $this->generateEducationItemImageURL($fileName);
 
             parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), array(
-                "id" => $member->getId(),
-                "name" => $member->getName(),
-                "email" => $member->getEmail(),
-                "description" => $member->getDescription(),
-                "referenceURL" => $member->getReferenceURL(),
+                "id" => $educationItem->getId(),
+                "type" => $educationItem->getType(),
+                "title" => $educationItem->getTitle(),
+                "description" => $educationItem->getDescription(),
+                "referenceURL" => $educationItem->getReferenceURL(),
+                "initYear" => $educationItem->getInitYear(),
+                "endYear" => $educationItem->getEndYear(),
                 "imageURL" => $imageURL
             ));
 
@@ -80,8 +86,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -91,7 +96,7 @@ class MemberController extends BaseController
         try {
             $id = parent::extractString($data, 'id');
 
-            $this->membersService->delete($id);
+            $this->educationService->delete($id);
 
             parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_EMPTY));
 
@@ -101,8 +106,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -112,17 +116,19 @@ class MemberController extends BaseController
         try {
             $id = parent::extractString($data, 'id');
 
-            $member = $this->membersService->get($id);
+            $educationItem = $this->educationService->get($id);
 
-            $fileName = $member->getImage()?->getStorageFileName();
-            $imageURL = $this->generateMemberImageURL($fileName);
+            $fileName = $educationItem->getImage()?->getStorageFileName();
+            $imageURL = $this->generateEducationItemImageURL($fileName);
 
             parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), array(
-                "id" => $member->getId(),
-                "name" => $member->getName(),
-                "email" => $member->getEmail(),
-                "description" => $member->getDescription(),
-                "referenceURL" => $member->getReferenceURL(),
+                "id" => $educationItem->getId(),
+                "type" => $educationItem->getType(),
+                "title" => $educationItem->getTitle(),
+                "description" => $educationItem->getDescription(),
+                "referenceURL" => $educationItem->getReferenceURL(),
+                "initYear" => $educationItem->getInitYear(),
+                "endYear" => $educationItem->getEndYear(),
                 "imageURL" => $imageURL
             ));
 
@@ -132,8 +138,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -141,20 +146,22 @@ class MemberController extends BaseController
     public function list(): void
     {
         try {
-            $members = $this->membersService->list();
+            $educationItems = $this->educationService->list();
 
             $membersData = [];
-            foreach ($members as $member) {
+            foreach ($educationItems as $educationItem) {
 
-                $fileName = $member->getImage()?->getStorageFileName();
-                $imageURL = $this->generateMemberImageURL($fileName);
+                $fileName = $educationItem->getImage()?->getStorageFileName();
+                $imageURL = $this->generateEducationItemImageURL($fileName);
 
                 $membersData[] = array(
-                    "id" => $member->getId(),
-                    "name" => $member->getName(),
-                    "email" => $member->getEmail(),
-                    "description" => $member->getDescription(),
-                    "referenceURL" => $member->getReferenceURL(),
+                    "id" => $educationItem->getId(),
+                    "type" => $educationItem->getType(),
+                    "title" => $educationItem->getTitle(),
+                    "description" => $educationItem->getDescription(),
+                    "referenceURL" => $educationItem->getReferenceURL(),
+                    "initYear" => $educationItem->getInitYear(),
+                    "endYear" => $educationItem->getEndYear(),
                     "imageURL" => $imageURL
                 );
             }
@@ -167,8 +174,7 @@ class MemberController extends BaseController
 
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -177,12 +183,12 @@ class MemberController extends BaseController
      * @param string|null $fileName
      * @return string
      */
-    private function generateMemberImageURL(?string $fileName): string
+    private function generateEducationItemImageURL(?string $fileName): string
     {
         if ($fileName != null) {
             $image = UPLOAD_FOLDER . $fileName;
         } else {
-            $image = "static/member_no_photo.png";
+            $image = "static/education_no_photo.jpg";
         }
 
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');

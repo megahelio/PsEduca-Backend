@@ -25,7 +25,7 @@ class MemberMapper
     /**
      * Saves a Member into the database and the file into the filesystem (if it is not null)
      *
-     * @param Member $member The user to be saved
+     * @param Member $member The member to be saved
      * @return Member
      * @throws FileException
      */

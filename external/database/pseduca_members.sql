@@ -10,7 +10,19 @@ ALTER TABLE `miembros`
     CHANGE `link_aportaciones_externo` `link_aportaciones_externo` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
     CHANGE `imagen` `imagen` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
 
--- todo: Insertar la tabla necesaria para formación
+-- Insertar la tabla necesaria para formación
+CREATE TABLE `pseduca`.`items_formacion` (
+    `id` INT NOT NULL AUTO_INCREMENT ,
+    `titulo` VARCHAR(255) NOT NULL ,
+    `descripcion` VARCHAR(1023) NOT NULL ,
+    `imagen` VARCHAR(255) NULL ,
+    `link_externo` VARCHAR(255) NOT NULL ,
+    `anho_inicio` INT NOT NULL ,
+    `anho_fin` INT NULL ,
+    `tipo` ENUM('MASTER','CURSO','DOCTORADO') NOT NULL ,
+    PRIMARY KEY (`id`))
+    ENGINE = InnoDB;
+
 
 COMMIT;
 
@@ -25,7 +37,7 @@ INSERT INTO pseduca.miembros (nombre, email, descripcion, link_aportaciones_exte
 VALUES ('Salvador G. González González', 'salva@uvigo.gal', 'Doctor en Psicología. Profesor Titular en el área de Psicología Evolutiva y de la Educación. Su actividad investigadora comienza con una serie de publicaciones en torno al ámbito de la educación para la salud y la prevención de la iniciación en la conducta de fumar y de otras drogodependencias en el contexto de la educación obligatoria. En una segunda etapa participa en  trabajos y proyectos sobre la motivación escolar y estrategias de aprendizaje, sobre los que se han realizado una serie de publicaciones de diverso impacto.', 'https://portalcientifico.uvigo.gal/investigadores/277632/detalle',  null);
 
 INSERT INTO pseduca.miembros (nombre, email, descripcion, link_aportaciones_externo, imagen)
-VALUES ('Mar García Señorán', 'msenoran@uvigo.gal', 'Doctora en Psicología. Profesora Titular en el área de Psicología Evolutiva y de la Educación. Coordinadora del Máster en Dificultades de Aprendizaje y Procesos Cognitivas y del Grupo de Investigación HI9- GiPEDUvi. Actualmente su investigación se centra en los procesos cognitivo-motivaciones implicados en el aprendizaje escolar. También participa en el estudio de las expectativas de estudiantes universitarios en colaboración con universidades portuguesas.', 'msenoran@uvigo.gal', 'c3336430-b211-46a4-98b3-6509d487c308.png');
+VALUES ('Mar García Señorán', 'msenoran@uvigo.gal', 'Doctora en Psicología. Profesora Titular en el área de Psicología Evolutiva y de la Educación. Coordinadora del Máster en Dificultades de Aprendizaje y Procesos Cognitivas y del Grupo de Investigación HI9- GiPEDUvi. Actualmente su investigación se centra en los procesos cognitivo-motivaciones implicados en el aprendizaje escolar. También participa en el estudio de las expectativas de estudiantes universitarios en colaboración con universidades portuguesas.', 'https://portalcientifico.uvigo.gal/investigadores/277356/detalle', 'c3336430-b211-46a4-98b3-6509d487c308.png');
 
 INSERT INTO pseduca.miembros (nombre, email, descripcion, link_aportaciones_externo, imagen)
 VALUES ('Martina Ares Ferreirós', 'mares@uvigo.gal', 'Martina Ares-Ferreirós es profesora ayudante doctora en la Universidad de Vigo en el Departamento de Psicología Evolutiva y Comunicación. Imparte docencia en los grados de educación infantil y primaria, y el los Masters en Necesidades Específicas de Apoyo Educativo y del profesorado. En el campo de la investigación se ha centrado en el estudio de los procesos cognitivos relacionados con el aprendizaje de la lectura e investigaciones en el campo de la innovación docente a través de la metodología cooperativa.', 'https://orcid.org/0000-0003-3871-1644', null);

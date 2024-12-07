@@ -8,6 +8,7 @@ enum Model: string
     case User = "User";
     case Mail = "Mail";
     case Member = "Member";
+    case EducationItem = "EducationItem";
 }
 
 enum Action

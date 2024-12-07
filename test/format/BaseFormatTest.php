@@ -33,6 +33,10 @@ class BaseFormatTest
         require_once __DIR__ . "/MemberFormatTest.php";
         $memberFormatTest = new MemberFormatTest($this->validToken, $this->testUserId);
         $memberFormatTest->runTests();
+
+        require_once __DIR__ . "/EducationFormatTest.php";
+        $educationFormatTest = new EducationFormatTest($this->validToken, $this->testUserId);
+        $educationFormatTest->runTests();
     }
 
     protected function runFieldValidationTest(string $fieldName, string $action, array $testCases, string $url, array $headers): void

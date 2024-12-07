@@ -307,7 +307,7 @@ A estos errores, hay que sumar los de formato y los de permisos (si procede).
 
 ##### Ejemplo de respuesta exitosa (status 200):
 
-Se ha eliminado correctamente el usuario. No se envía recurso, ya que se ha eliminado. El status más correcto sería 204,
+Se ha eliminado correctamente el miembro. No se envía recurso, ya que se ha eliminado. El status más correcto sería 204,
 pero ese código no permite enviar cuerpo en la respuesta y por ese motivo se decidió mantener el status 200.
 
 ~~~
@@ -387,7 +387,7 @@ Las respuestas serán siempre en formato **JSON**.
 ##### Campos
 Se requiere enviar los siguientes campos:
 
-- `id` (int, obligatorio): Identificador del usuario.
+- `id` (int, obligatorio): Identificador del miembro.
 
 #### Response
 
@@ -398,7 +398,7 @@ A estos errores, hay que sumar los de formato y los de permisos (si procede).
 | Tipo   | Código                       | Descripción                                      |
 |--------|------------------------------|--------------------------------------------------|
 | Éxito  | `RECORDSET_DATA`             | Datos recuperados correctamente.                 |
-| Error  | `MIEMBRO_NO_ENCONTRADO_A_KO` | El usuario a recuperar no ha sido encontrado.    |
+| Error  | `MIEMBRO_NO_ENCONTRADO_A_KO` | El miembro a recuperar no ha sido encontrado.    |
 | Error  | `INTERNAL_SERVER_ERROR_KO`   | Error interno del servidor (o de Base de datos). |
 
 ##### Ejemplo de respuesta exitosa (status 200):
@@ -457,7 +457,7 @@ En esta respuesta se ha producido un error del servidor, con origen en la base d
 
 ##### Ejemplo de respuesta con error (status 400):
 
-Error provocado por no existir un usuario con el id enviado.
+Error provocado por no existir un miembro con el id enviado.
 
 ~~~
 

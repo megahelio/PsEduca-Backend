@@ -1,12 +1,14 @@
 <?php
 
 require_once __DIR__ . "/../format/MemberFormatTest.php";
+require_once __DIR__ . "/../format/EducationFormatTest.php";
 
 enum TestController: string
 {
     case User = "user";
     case Mail = "contact";
     case Member = "member";
+    case Education = "education";
 }
 enum TestAction: string
 {
@@ -49,6 +51,13 @@ class PermissionTest
             TestAction::EDIT->name => TestUserRole::ADMIN_GLOBAL,
             TestAction::DELETE->name => TestUserRole::ADMIN_GLOBAL,
         ],
+        TestController::Education->name => [
+            TestAction::GET->name => TestUserRole::NO_AUTH,
+            TestAction::LIST->name => TestUserRole::NO_AUTH,
+            TestAction::ADD->name => TestUserRole::ADMIN_GLOBAL,
+            TestAction::EDIT->name => TestUserRole::ADMIN_GLOBAL,
+            TestAction::DELETE->name => TestUserRole::ADMIN_GLOBAL,
+        ],
     ];
 
     private static array $roleHierarchy = [
@@ -70,12 +79,19 @@ class PermissionTest
                 foreach (TestUserRole::cases() as $currentRole) {
 
                     // Necesario payload para ciertas acciones, debido a doble validación: GET + ACCIÓN (EDIT, DELETE)
-                    if ($controller === TestController::Member->name
-                            && in_array($action, [TestAction::EDIT->name, TestAction::DELETE->name])
+                    if (in_array($action, [TestAction::EDIT->name, TestAction::DELETE->name])
                             && $currentRole !== TestUserRole::ADMIN_GLOBAL) {
-                        $payload = [
-                            'id' => $this->testMemberId
-                        ];
+                        switch ($controller){
+                            case TestController::Member->name:
+                                $payload = [
+                                    'id' => $this->testMemberId
+                                ];
+                                break;
+                            case TestController::Education->name:
+                                $payload = [
+                                    'id' => $this->testEducationItemId
+                                ];
+                        }
                     } else {
                         $payload = [];
                     }
@@ -161,8 +177,12 @@ class PermissionTest
     private TestUser $testUserAdmin;
     private TestUser $testUserGestor;
     private TestUser $testUserUsuario;
+
     private MemberFormatTest $memberFormatTest;
     private string $testMemberId;
+
+    private EducationFormatTest $educationFormatTest;
+    private string $testEducationItemId;
 
     public function __construct(?TestUser $testUserAdmin, ?TestUser $testUserGestor, ?TestUser $testUserUsuario)
     {
@@ -174,10 +194,9 @@ class PermissionTest
         $this->memberFormatTest = new MemberFormatTest($this->testUserAdmin->getJwtToken(), $this->testUserAdmin->getId());
         $this->testMemberId = $this->memberFormatTest->insertTestData();
 
-    }
+        // Nos hace falta un item de formación para las pruebas
+        $this->educationFormatTest = new EducationFormatTest($this->testUserAdmin->getJwtToken(), $this->testUserAdmin->getId());
+        $this->testEducationItemId = $this->educationFormatTest->insertTestData();
 
-//    public function __destruct()
-//    {
-//        $this->memberFormatTest->__destruct();
-//    }
+    }
 }

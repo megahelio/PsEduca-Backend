@@ -69,12 +69,26 @@ class BaseFormatValidation
     protected function validateLink(?string $link, bool $allowedEmpty): void
     {
         if (!$allowedEmpty || !empty($link)) {
-            if (strlen($link) < 4) {
+            if (strlen($link ?? "") < 4) {
                 $this->addError('LINK_MINIMO_F_KO');
             } elseif (strlen($link) > 254) {
                 $this->addError('LINK_MAXIMO_F_KO');
             } elseif (!filter_var($link, FILTER_VALIDATE_URL)) {
                 $this->addError('LINK_INVALIDO_F_KO');
+            }
+        }
+    }
+
+    // Validar descripción
+    protected function validateDescription(?string $description, bool $allowedEmpty, int $minCharacters, int $maxCharacters): void
+    {
+        if (!$allowedEmpty || !empty($description)) {
+            if (strlen($description ?? "") < $minCharacters) {
+                $this->addError('DESCRIPCION_MINIMO_F_KO');
+            } elseif (strlen($description) > $maxCharacters) {
+                $this->addError('DESCRIPCION_MAXIMO_F_KO');
+            } elseif (!preg_match('/^[^\a]*$/', $description)) {
+                $this->addError('DESCRIPCION_CARACTERES_F_KO');
             }
         }
     }
