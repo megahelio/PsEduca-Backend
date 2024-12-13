@@ -191,9 +191,9 @@ class EducationController extends BaseController
             $image = "static/education_no_photo.jpg";
         }
 
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
+        $imageURN = (str_starts_with($image, '/') ? '' : '/').$image;
 
-        return $serverURL . $image;
+        return $imageURN;
     }
 
 }
