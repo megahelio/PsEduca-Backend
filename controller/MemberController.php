@@ -185,9 +185,9 @@ class MemberController extends BaseController
             $image = "static/member_no_photo.png";
         }
 
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
+         $imageURN = (str_starts_with($image, '/') ? '' : '/').$image;
 
-        return $serverURL . $image;
+        return $imageURN;
     }
 
 }
