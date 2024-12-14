@@ -56,9 +56,9 @@ function validateResponse(array $response, int $expectedHTTPCode, bool $expected
     assertEquals($expectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado.");
     // Validar ok
     if ($expectedOk) {
-        assertTrue($response['body']['ok'], "La respuesta indica fallo.");
+        assertTrue($response['body']['ok'], "La respuesta indica fallo (ok = false).");
     } else {
-        assertFalse($response['body']['ok'], "La respuesta indica éxito.");
+        assertFalse($response['body']['ok'], "La respuesta indica éxito (ok = true).");
     }
     // Validar códigos de respuesta
     foreach ($expectedCodes as $expectedCode) {
@@ -67,7 +67,8 @@ function validateResponse(array $response, int $expectedHTTPCode, bool $expected
 }
 
 // Función para realizar peticiones HTTP
-function makeRequest($method, $url, $headers = [], $data = []) {
+function makeRequest($method, $url, $headers = [], $data = []): array
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);

@@ -1,14 +1,14 @@
 <?php
 
-class UserFormatTest extends BaseFormatTest
+class UserFormatTest
 {
     private string $validToken;
+    private array $testUserData;
 
-    public function __construct(string $validToken, string $testUserId)
+    public function __construct(string $validToken, array $testUserData)
     {
-        parent::__construct($validToken, $testUserId);
-
         $this->validToken = $validToken;
+        $this->testUserData = $testUserData;
     }
 
     public function runTests(): void
@@ -31,7 +31,7 @@ class UserFormatTest extends BaseFormatTest
                 };
 
                 echo "<h4>Ejecutando pruebas para $action - $fieldName</h4>\n";
-                $this->runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
+                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
             }
         }
     }
@@ -39,6 +39,8 @@ class UserFormatTest extends BaseFormatTest
 
     private function defineActionFieldValidations(): array
     {
+        $userId = $this->testUserData[0]['id'];
+
         $idFormatTests = [
             [
                 'value' => null,
@@ -79,8 +81,7 @@ class UserFormatTest extends BaseFormatTest
                 'expectedHTTPCode' => 400,
                 'payload' =>
                     [
-//                        'role' => 'ADMIN_GLOBAL',
-//                        'password' => 'securePass'
+                        'id' => $userId
                     ]
             ],
             [
@@ -90,10 +91,8 @@ class UserFormatTest extends BaseFormatTest
                         'NOMBRE_USUARIO_MAXIMO_F_KO'
                     ],
                 'expectedHTTPCode' => 400,
-                'payload' =>
-                    [
-//                        'role' => 'ADMIN_GLOBAL',
-//                        'password' => 'securePass'
+                'payload' => [
+                        'id' => $userId
                     ]
             ],
             [
@@ -103,10 +102,8 @@ class UserFormatTest extends BaseFormatTest
                         'NOMBRE_USUARIO_CARACTERES_F_KO'
                     ],
                 'expectedHTTPCode' => 400,
-                'payload' =>
-                    [
-//                        'role' => 'ADMIN_GLOBAL',
-//                        'password' => 'securePass'
+                'payload' => [
+                        'id' => $userId
                     ]
             ]
         ];
@@ -119,9 +116,8 @@ class UserFormatTest extends BaseFormatTest
                 ],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-//                    'role' => 'ADMIN_GLOBAL',
-//                    'password' => 'securePass'
-                ]
+                        'id' => $userId
+                    ]
             ],
             [
                 'value' => str_repeat('a', 255),
@@ -130,9 +126,8 @@ class UserFormatTest extends BaseFormatTest
                 ],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-//                    'role' => 'ADMIN_GLOBAL',
-//                    'password' => 'securePass'
-                ]
+                        'id' => $userId
+                    ]
             ],
             [
                 'value' => 'maria@lopez',
@@ -141,9 +136,8 @@ class UserFormatTest extends BaseFormatTest
                 ],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-//                    'role' => 'ADMIN_GLOBAL',
-//                    'password' => 'securePass'
-                ]
+                        'id' => $userId
+                    ]
             ]
         ];
 
@@ -158,8 +152,7 @@ class UserFormatTest extends BaseFormatTest
                 'expectedHTTPCode' => 400,
                 'payload' =>
                     [
-//                        'userName' => "TEST_USER" . rand(0, 1000),
-//                        'role' => 'ADMIN_GLOBAL'
+                        'id' => $userId
                     ]
             ],
             [
@@ -171,8 +164,7 @@ class UserFormatTest extends BaseFormatTest
                 'expectedHTTPCode' => 400,
                 'payload' =>
                     [
-//                        'userName' => "TEST_USER" . rand(0, 1000),
-//                        'role' => 'ADMIN_GLOBAL'
+                        'id' => $userId
                     ]
             ],
             [
@@ -184,8 +176,7 @@ class UserFormatTest extends BaseFormatTest
                 'expectedHTTPCode' => 400,
                 'payload' =>
                     [
-//                        'userName' => "TEST_USER" . rand(0, 1000),
-//                        'role' => 'ADMIN_GLOBAL'
+                        'id' => $userId
                     ]
             ]
         ];
@@ -200,8 +191,7 @@ class UserFormatTest extends BaseFormatTest
                 'expectedHTTPCode' => 400,
                 'payload' =>
                     [
-//                        'userName' => "TEST_USER" . rand(0, 1000),
-//                        'password' => 'securePass'
+                        'id' => $userId
                     ]
             ]
         ];

@@ -66,6 +66,7 @@ function run(): void {
 		$restController->$actionName($_POST);
 
 	} catch (PDOException $ex) {
+        echo $ex;
         http_response_code(503);
         $response = [
             'ok' => false,

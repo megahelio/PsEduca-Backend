@@ -29,7 +29,7 @@ class EducationItemFormatValidation extends BaseFormatValidation {
                 $this->validateDescription($educationItem->getDescription(), false, 4, 1000);
                 $this->validateLink($educationItem->getReferenceURL(), false);
                 $this->validateStartYear($educationItem->getInitYear());
-                $this->validateEndYear($educationItem->getEndYear());
+                $this->validateEndYear($educationItem->getEndYear(), $educationItem->getInitYear());
                 $this->validateType($educationItem->getType());
                 $this->validateFile(
                     file: $educationItem->getImage(),
@@ -51,7 +51,7 @@ class EducationItemFormatValidation extends BaseFormatValidation {
         if (strlen($name ?? "") < 4) {
             $this->addError('TITULO_FORMACION_MINIMO_F_KO');
         } elseif (strlen($name) > 254) {
-            $this->addError('TITULO_FORMACION_CARACTERES_F_KO');
+            $this->addError('TITULO_FORMACION_MAXIMO_F_KO');
         } elseif (!preg_match('/^[a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑªº,.\'" ]+$/', $name)) {
             $this->addError('TITULO_FORMACION_CARACTERES_F_KO');
         }
@@ -79,7 +79,7 @@ class EducationItemFormatValidation extends BaseFormatValidation {
     }
 
     // Validar anho_fin
-    private function validateEndYear(?string $endYear): void
+    private function validateEndYear(?string $endYear, ?string $initYear): void
     {
         if (!is_null($endYear)){
             if (!is_numeric($endYear)) {
@@ -88,6 +88,9 @@ class EducationItemFormatValidation extends BaseFormatValidation {
                 $this->addError('ANHO_FIN_MINIMO_F_KO');
             } elseif (intval($endYear) > 3000) {
                 $this->addError('ANHO_FIN_MAXIMO_F_KO');
+            } elseif (is_numeric($initYear) && intval($endYear) < intval($initYear)) {
+                // Comprobar que el año de fin es mayor o igual al año de inicio
+                $this->addError('ANHO_FIN_INVALIDO_F_KO');
             }
         }
     }

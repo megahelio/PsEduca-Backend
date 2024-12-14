@@ -3,9 +3,11 @@
 require_once __DIR__ . "/tools.php";
 require_once __DIR__ . "/../core/config_file.php";
 require_once __DIR__ . "/TestUser.php";
+require_once __DIR__ . "/TestDataManagement.php";
 
 require_once __DIR__ . "/permission/PermissionTest.php";
 require_once __DIR__ . "/format/BaseFormatTest.php";
+require_once __DIR__ . "/action/BaseActionTest.php";
 
 class ValidationTests
 {
@@ -13,6 +15,8 @@ class ValidationTests
     private TestUser $gestCatTestUser;
     private TestUser $usuarioPYPTestUser;
     private string $token;
+
+    private TestDataManagement $dataManagement;
 
     /**
      * @throws Exception
@@ -23,6 +27,8 @@ class ValidationTests
         $this->adminTestUser = $this->insertTestUser("ADMIN_GLOBAL");
         $this->gestCatTestUser = $this->insertTestUser("GESTOR_CATALOGO");
         $this->usuarioPYPTestUser = $this->insertTestUser("USUARIO_PYP");
+
+        $this->dataManagement = new TestDataManagement($this->token);
     }
 
     /**
@@ -137,12 +143,22 @@ class ValidationTests
         <?php
 
         // Test de permisos
-        $permissions = new PermissionTest($this->adminTestUser, $this->gestCatTestUser, $this->usuarioPYPTestUser);
+        $permissions = new PermissionTest(
+                testUserAdmin: $this->adminTestUser,
+                testUserGestor: $this->gestCatTestUser,
+                testUserUsuario: $this->usuarioPYPTestUser,
+                testMemberData: $this->dataManagement->getTestData(TestController::Member),
+                testEducationData: $this->dataManagement->getTestData(TestController::Education)
+        );
         $permissions->runTests();
 
         // Test de formato
-        $format = new BaseFormatTest($this->adminTestUser->getJwtToken(), $this->adminTestUser->getId());
+        $format = new BaseFormatTest($this->adminTestUser->getJwtToken(), $this->dataManagement);
         $format->runTests();
+
+        // Test de acciones
+        $action = new BaseActionTest($this->adminTestUser->getJwtToken(), $this->dataManagement);
+        $action->runTests();
     }
 
 }
@@ -166,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         <body>
         <h1>Error en pruebas de validación de campos de usuario</h1>
         <p>Estas pruebas validan los campos de usuario en las acciones de agregar, editar y obtener.</p>
-        <p style="color: darkred"><?= $e->getMessage() ?></p>
+        <p style="color: darkred"><?= $e ?></p>
         <p style="color: darkred">No se ha podido iniciar sesión con usuario por defecto, por favor introduce credenciales de usuario con rol ADMIN_GLOBAL.</p>
         <form method="post">
             <!--        Es necesario que el usuario nos envíe usuario y contraseña de admin_global -->

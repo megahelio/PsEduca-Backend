@@ -1,13 +1,11 @@
 <?php
 
-class AuthFormatTest extends BaseFormatTest
+class AuthFormatTest
 {
     private string $validToken;
 
-    public function __construct(string $validToken, string $testUserId)
+    public function __construct(string $validToken, array $testUserData)
     {
-        parent::__construct($validToken, $testUserId);
-
         $this->validToken = $validToken;
     }
 
@@ -27,7 +25,7 @@ class AuthFormatTest extends BaseFormatTest
                 };
 
                 echo "<h4>Ejecutando pruebas para $action - $fieldName</h4>\n";
-                $this->runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
+                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
             }
         }
     }

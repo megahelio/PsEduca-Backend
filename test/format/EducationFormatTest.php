@@ -2,26 +2,17 @@
 
 require_once __DIR__ . "/BaseFormatTest.php";
 
-class EducationFormatTest extends BaseFormatTest
+class EducationFormatTest
 {
     private string $validToken;
-    private string $testEducationItemId;
+    private array $testEducationData;
 
-
-    public function __construct(string $validToken, string $testUserId)
+    public function __construct(string $validToken, array $testEducationData)
     {
-        parent::__construct($validToken, $testUserId);
         $this->validToken = $validToken;
-        $this->insertTestData();
+        $this->testEducationData = $testEducationData;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function __destruct()
-    {
-        $this->removeTestData($this->testEducationItemId);
-    }
 
     public function runTests(): void
     {
@@ -43,13 +34,14 @@ class EducationFormatTest extends BaseFormatTest
                 };
 
                 echo "<h4>Ejecutando pruebas para $action - $fieldName</h4>\n";
-                $this->runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
+                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
             }
         }
     }
 
     private function defineActionFieldValidations(): array
     {
+        $testEducationItemId = $this->testEducationData[0]['id'];
         $idFormatTests = [
             [
                 'value' => null,
@@ -77,7 +69,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['TITULO_FORMACION_MINIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -85,7 +77,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['TITULO_FORMACION_MAXIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -93,7 +85,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['TITULO_FORMACION_CARACTERES_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
         ];
@@ -104,7 +96,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['DESCRIPCION_MINIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -112,7 +104,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['DESCRIPCION_MAXIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -120,7 +112,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['DESCRIPCION_CARACTERES_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
         ];
@@ -131,7 +123,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['LINK_MINIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -139,7 +131,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['LINK_MAXIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -147,18 +139,18 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['LINK_INVALIDO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
         ];
 
-        $yearFormatTests = [
+        $initYearFormatTests = [
             [
                 'value' => 'diez',
                 'expectedErrors' => ['ANHO_INICIO_INVALIDO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -166,7 +158,7 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['ANHO_INICIO_MINIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
             [
@@ -174,40 +166,66 @@ class EducationFormatTest extends BaseFormatTest
                 'expectedErrors' => ['ANHO_INICIO_MAXIMO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
+                ]
+            ],
+        ];
+
+        $endYearFormatTests = [
+            [
+                'value' => 'diez',
+                'expectedErrors' => ['ANHO_FIN_INVALIDO_F_KO'],
+                'expectedHTTPCode' => 400,
+                'payload' => [
+                    'id' => $testEducationItemId
+                ]
+            ],
+            [
+                'value' => 1856,
+                'expectedErrors' => ['ANHO_FIN_MINIMO_F_KO'],
+                'expectedHTTPCode' => 400,
+                'payload' => [
+                    'id' => $testEducationItemId
+                ]
+            ],
+            [
+                'value' => 9999,
+                'expectedErrors' => ['ANHO_FIN_MAXIMO_F_KO'],
+                'expectedHTTPCode' => 400,
+                'payload' => [
+                    'id' => $testEducationItemId
                 ]
             ],
         ];
 
         $typeFormatTests = [
             [
-                'value' => 'MÁSTER',
+                'value' => 'bachillerato',
                 'expectedErrors' => ['TIPO_F_KO'],
                 'expectedHTTPCode' => 400,
                 'payload' => [
-                    'id' => $this->testEducationItemId
+                    'id' => $testEducationItemId
                 ]
             ],
         ];
 
         return [
             'ADD' => [
-                'id' => $idFormatTests,
-                'titulo' => $titleFormatTests,
-                'descripcion' => $descriptionFormatTests,
-                'link_externo' => $linkFormatTests,
-                'anho_inicio' => $yearFormatTests,
-                'anho_fin' => $yearFormatTests,
-                'tipo' => $typeFormatTests,
+                'title' => $titleFormatTests,
+                'description' => $descriptionFormatTests,
+                'referenceURL' => $linkFormatTests,
+                'initYear' => $initYearFormatTests,
+                'endYear' => $endYearFormatTests,
+                'type' => $typeFormatTests,
             ],
             'EDIT' => [
                 'id' => $idFormatTests,
-                'titulo' => $titleFormatTests,
-                'descripcion' => $descriptionFormatTests,
-                'link_externo' => $linkFormatTests,
-                'anho_inicio' => $yearFormatTests,
-                'anho_fin' => $yearFormatTests,
-                'tipo' => $typeFormatTests,
+                'title' => $titleFormatTests,
+                'description' => $descriptionFormatTests,
+                'referenceURL' => $linkFormatTests,
+                'initYear' => $initYearFormatTests,
+                'endYear' => $endYearFormatTests,
+                'type' => $typeFormatTests,
             ],
             'DELETE' => [
                 'id' => $idFormatTests,
@@ -217,61 +235,4 @@ class EducationFormatTest extends BaseFormatTest
             ],
         ];
     }
-
-
-    /**
-     * @throws Exception
-     */
-    public function insertTestData(): string
-    {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=education&action=add";
-        $headers = ["Authorization: Bearer $this->validToken"];
-
-        $payload = [
-            'title' => 'Title test',
-            'type' => 'MASTER',
-            'description' => 'Test description',
-            'referenceURL' => 'https://test.com',
-            'initYear' => '2020',
-            'endYear' => '2021',
-        ];
-
-        $response = makeRequest("POST", $url, $headers, $payload);
-
-        $responseBody = $response['body'];
-
-        if ($response['httpCode'] != 201 || $responseBody['ok'] === false) {
-            throw new Exception("Error inserting test education item: " . print_r($responseBody, true));
-        }
-
-        echo "Item de formación de prueba insertado con id " . $responseBody['resource']['id'] . ".\n ";
-
-        $this->testEducationItemId = $responseBody['resource']['id'];
-        return $this->testEducationItemId;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function removeTestData(string $id): void
-    {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=education&action=delete";
-        $headers = ["Authorization: Bearer " .$this->validToken];
-        $payload = [
-            'id' => $id,
-        ];
-
-        $response = makeRequest("POST", $url, $headers, $payload);
-
-        $responseBody = $response['body'];
-
-        if ($responseBody['ok'] === false) {
-            throw new Exception("Error deleting test education item: " . $id);
-        }
-
-        echo "Item de formación de prueba con id ". $id . " eliminado correctamente\n. ";
-    }
-
 }

@@ -178,25 +178,20 @@ class PermissionTest
     private TestUser $testUserGestor;
     private TestUser $testUserUsuario;
 
-    private MemberFormatTest $memberFormatTest;
     private string $testMemberId;
-
-    private EducationFormatTest $educationFormatTest;
     private string $testEducationItemId;
 
-    public function __construct(?TestUser $testUserAdmin, ?TestUser $testUserGestor, ?TestUser $testUserUsuario)
+    public function __construct(?TestUser $testUserAdmin, ?TestUser $testUserGestor, ?TestUser $testUserUsuario, array $testMemberData, array $testEducationData)
     {
         $this->testUserAdmin = $testUserAdmin;
         $this->testUserGestor = $testUserGestor;
         $this->testUserUsuario = $testUserUsuario;
 
         // Nos hace falta un miembro para las pruebas
-        $this->memberFormatTest = new MemberFormatTest($this->testUserAdmin->getJwtToken(), $this->testUserAdmin->getId());
-        $this->testMemberId = $this->memberFormatTest->insertTestData();
+        $this->testMemberId = $testMemberData[0]['id'];
 
         // Nos hace falta un item de formación para las pruebas
-        $this->educationFormatTest = new EducationFormatTest($this->testUserAdmin->getJwtToken(), $this->testUserAdmin->getId());
-        $this->testEducationItemId = $this->educationFormatTest->insertTestData();
+        $this->testEducationItemId = $testEducationData[0]['id'];
 
     }
 }

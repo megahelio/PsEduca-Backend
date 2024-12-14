@@ -2,24 +2,15 @@
 
 require_once __DIR__ . "/BaseFormatTest.php";
 
-class MemberFormatTest extends BaseFormatTest
+class MemberFormatTest
 {
     private string $validToken;
     private string $testMemberId;
 
-    public function __construct(string $validToken, string $testUserId)
+    public function __construct(string $validToken, array $testMemberData)
     {
-        parent::__construct($validToken, $testUserId);
         $this->validToken = $validToken;
-        $this->insertTestData();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function __destruct()
-    {
-        $this->removeTestMember($this->testMemberId);
+        $this->testMemberId = $testMemberData[0]['id'];
     }
 
     public function runTests(): void
@@ -42,7 +33,7 @@ class MemberFormatTest extends BaseFormatTest
                 };
 
                 echo "<h4>Ejecutando pruebas para $action - $fieldName</h4>\n";
-                $this->runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
+                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
             }
         }
     }
@@ -185,56 +176,4 @@ class MemberFormatTest extends BaseFormatTest
             'LIST' => []
         ];
     }
-
-    /**
-     * @throws Exception
-     */
-    public function insertTestData(): string
-    {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=member&action=add";
-        $headers = ["Authorization: Bearer $this->validToken"];
-
-        $name = "TEST_MEMBER" . rand(0, 1000);
-        $payload = [
-            'name' => $name,
-        ];
-
-        $response = makeRequest("POST", $url, $headers, $payload);
-
-        $responseBody = $response['body'];
-
-        if ($response['httpCode'] != 201 || $responseBody['ok'] === false) {
-            throw new Exception("Error inserting test member: " . print_r($responseBody, true));
-        }
-
-        echo "Miembro de prueba insertado con id " . $responseBody['resource']['id'] . ".\n ";
-
-        $this->testMemberId = $responseBody['resource']['id'];
-        return $this->testMemberId;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function removeTestMember(string $id): void
-    {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=member&action=delete";
-        $headers = ["Authorization: Bearer " .$this->validToken];
-        $payload = [
-            'id' => $id,
-        ];
-
-        $response = makeRequest("POST", $url, $headers, $payload);
-
-        $responseBody = $response['body'];
-
-        if ($responseBody['ok'] === false) {
-            throw new Exception("Error deleting test member: " . $id);
-        }
-
-        echo "Miembro de prueba con id ". $id . " eliminado correctamente\n. ";
-    }
-
 }

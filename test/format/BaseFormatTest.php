@@ -3,12 +3,12 @@
 class BaseFormatTest
 {
     private string $validToken;
-    private string $testUserId;
+    private TestDataManagement $dataManagement;
 
-    public function __construct(string $validToken, string $testUserId)
+    public function __construct(string $validToken, TestDataManagement $testUserData)
     {
         $this->validToken = $validToken;
-        $this->testUserId = $testUserId;
+        $this->dataManagement = $testUserData;
     }
 
     /**
@@ -23,23 +23,23 @@ class BaseFormatTest
         <?php
 
         require_once __DIR__ . "/UserFormatTest.php";
-        $userFormatTest = new UserFormatTest($this->validToken, $this->testUserId);
+        $userFormatTest = new UserFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::User));
         $userFormatTest->runTests();
 
         require_once __DIR__ . "/AuthFormatTest.php";
-        $authFormatTest = new AuthFormatTest($this->validToken, $this->testUserId);
+        $authFormatTest = new AuthFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::User));
         $authFormatTest->runTests();
 
         require_once __DIR__ . "/MemberFormatTest.php";
-        $memberFormatTest = new MemberFormatTest($this->validToken, $this->testUserId);
+        $memberFormatTest = new MemberFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::Member));
         $memberFormatTest->runTests();
 
         require_once __DIR__ . "/EducationFormatTest.php";
-        $educationFormatTest = new EducationFormatTest($this->validToken, $this->testUserId);
+        $educationFormatTest = new EducationFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::Education));
         $educationFormatTest->runTests();
     }
 
-    protected function runFieldValidationTest(string $fieldName, string $action, array $testCases, string $url, array $headers): void
+    public static function runFieldValidationTest(string $fieldName, string $action, array $testCases, string $url, array $headers): void
     {
         foreach ($testCases as $case) {
             $value = $case['value'] ?? "NULO";
@@ -48,12 +48,6 @@ class BaseFormatTest
                 $payload = $case['payload'];
 
                 $payload[$fieldName] = $case['value'];
-
-                if ($action === 'EDIT' || $action === 'DELETE' || $action === 'GET') {
-                    if (!array_key_exists('id', $payload)) {
-                        $payload['id'] = $this->testUserId;
-                    }
-                }
 
                 $response = makeRequest("POST", $url, $headers, $payload);
 
