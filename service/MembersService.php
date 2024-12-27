@@ -23,7 +23,14 @@ class MembersService
     public function add(?string  $name, ?string $email, ?string $description, ?string $referenceURL, ?File $file): Member
     {
 
-        $member = new Member(null, $name, $email, $description, $referenceURL, $file);
+        $member = new Member(
+            id: null,
+            name: $name == "" ? null : $name,
+            email: $email == "" ? null : $email,
+            description: $description == "" ? null : $description,
+            referenceURL: $referenceURL == "" ? null : $referenceURL,
+            image: $file
+        );
 
         Validator::validate($member, Action::ADD);
 
@@ -71,11 +78,11 @@ class MembersService
 
         $member = $this->get($id);
 
-        if (!is_null($name)) $member->setName($name ?: null);
-        if (!is_null($email)) $member->setEmail($email ?: null);
-        if (!is_null($description)) $member->setDescription($description ?: null);
-        if (!is_null($referenceURL)) $member->setReferenceURL($referenceURL ?: null);
-        if (!is_null($file)) $member->setNewImage($file);
+      if (!is_null($name)) $member->setName($name == "" ? null : $name);
+    if (!is_null($email)) $member->setEmail($email == "" ? null : $email);
+    if (!is_null($description)) $member->setDescription($description == "" ? null : $description);
+    if (!is_null($referenceURL)) $member->setReferenceURL($referenceURL == "" ? null : $referenceURL);
+    if (!is_null($file)) $member->setNewImage($file);
 
         Validator::validate($member, Action::EDIT);
 

@@ -23,7 +23,16 @@ class EducationService
     public function add(?string $type, ?string $title, ?string $description, ?string $referenceURL, ?string $initYear,
                         ?string $endYear, ?File $file): EducationItem
     {
-        $educationItem = new EducationItem(null, $type, $title, $description, $file, $referenceURL, $initYear, $endYear);
+        $educationItem = new EducationItem(
+            id: null,
+            type: $type == "" ? null : $type,
+            title: $title == "" ? null : $title,
+            description: $description == "" ? null : $description,
+            image: $file,
+            referenceURL: $referenceURL == "" ? null : $referenceURL,
+            initYear: $initYear == "" ? null : $initYear,
+            endYear: $endYear == "" ? null : $endYear
+        );
 
         Validator::validate($educationItem, Action::ADD);
 
@@ -41,12 +50,12 @@ class EducationService
     {
         $educationItem = $this->get($id);
 
-        if (!is_null($type)) $educationItem->setType($type);
-        if (!is_null($title)) $educationItem->setTitle($title);
-        if (!is_null($description)) $educationItem->setDescription($description);
-        if (!is_null($referenceURL)) $educationItem->setReferenceURL($referenceURL);
-        if (!is_null($initYear)) $educationItem->setInitYear($initYear);
-        if (!is_null($endYear)) $educationItem->setEndYear($endYear);
+        if (!is_null($type)) $educationItem->setType($type == "" ? null : $type);
+        if (!is_null($title)) $educationItem->setTitle($title == "" ? null : $title);
+        if (!is_null($description)) $educationItem->setDescription($description == "" ? null : $description);
+        if (!is_null($referenceURL)) $educationItem->setReferenceURL($referenceURL == "" ? null : $referenceURL);
+        if (!is_null($initYear)) $educationItem->setInitYear($initYear == "" ? null : $initYear);
+        if (!is_null($endYear)) $educationItem->setEndYear($endYear == "" ? null : $endYear);
         if (!is_null($file)) $educationItem->setNewImage($file);
 
         Validator::validate($educationItem, Action::EDIT);

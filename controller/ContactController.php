@@ -30,8 +30,7 @@ class ContactController extends BaseController {
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (MailException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }

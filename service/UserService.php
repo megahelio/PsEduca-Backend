@@ -70,10 +70,16 @@ class UserService {
      * @throws ValidationException
      * @throws ReflectionException
      */
-    public function add(?string $username, ?string $fullName, ?string $password, ?string $strRole): User
+    public function add(?string $userName, ?string $fullName, ?string $password, ?string $strRole): User
     {
 
-        $user = new User(null, $username, $password, $strRole, $fullName);
+        $user = new User(
+            id: null,
+            userName: $userName == "" ? null : $userName,
+            passwd: $password == "" ? null : $password,
+            role: $strRole == "" ? null : $strRole,
+            fullName: $fullName == "" ? null : $fullName
+        );
 
         Validator::validate($user, Action::ADD);
 
@@ -90,10 +96,10 @@ class UserService {
         $user = $this->get($id);
 
         // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
-        if (!is_null($userName)) $user->setUserName($userName ?: null);
-        if (!is_null($fullName)) $user->setFullName($fullName ?: null);
-        if (!is_null($password)) $user->setPassword($password ?: null);
-        if (!is_null($strRole)) $user->setRole($strRole ?: null);
+        if (!is_null($userName)) $user->setUserName($userName == "" ? null : $userName);
+        if (!is_null($fullName)) $user->setFullName($fullName == "" ? null : $fullName);
+        if (!is_null($password)) $user->setPassword($password == "" ? null : $password);
+        if (!is_null($strRole)) $user->setRole($strRole == "" ? null : $strRole);
 
         Validator::validate($user, Action::EDIT);
 

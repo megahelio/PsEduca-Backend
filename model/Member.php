@@ -59,28 +59,28 @@ class Member
     /**
      * The constructor
      *
-     * @param string|null $nombre The name of the member
+     * @param string|null $name The name of the member
      * @param string|null $email The email of the member
      * @param string|null $description The description of the member
      * @param string|null $referenceURL The reference URL
-     * @param File|null $imagen The image of the member
+     * @param File|null $image The image of the member
      */
     public function __construct(
         ?string $id = null,
-        ?string $nombre = null,
+        ?string $name = null,
         ?string $email = null,
         ?string $description = null,
         ?string $referenceURL = null,
-        ?File   $imagen = null,
-        ?File  $newImage = null,
-        bool $isImageChanged = false
+        ?File   $image = null,
+        ?File   $newImage = null,
+        bool    $isImageChanged = false
     ) {
         $this->id = $id;
-        $this->name = $nombre;
+        $this->name = $name;
         $this->email = $email;
         $this->description = $description;
         $this->referenceURL = $referenceURL;
-        $this->image = $imagen;
+        $this->image = $image;
         $this->newImage = $newImage;
         $this->isImageChanged = $isImageChanged;
     }
