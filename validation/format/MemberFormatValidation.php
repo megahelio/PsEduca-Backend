@@ -4,7 +4,6 @@ require_once __DIR__ . "/BaseFormatValidation.php";
 
 class MemberFormatValidation extends BaseFormatValidation {
 
-    public static array $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif', 'image/x-icon'];
     public static int $maxFileSize = 10485760; // 10 MB
     public function __construct() {
         parent::__construct();
@@ -31,8 +30,9 @@ class MemberFormatValidation extends BaseFormatValidation {
                 $this->validateLink($member->getReferenceURL(), true);
                 $this->validateFile(
                     file: $member->getImage(),
-                    allowedMimeTypes: MemberFormatValidation::$allowedMimeTypes,
-                    maxFileSize: MemberFormatValidation::$maxFileSize
+                    fileType: FileType::Image,
+                    maxFileSize: MemberFormatValidation::$maxFileSize,
+                    allowedEmpty: true
                 );
                 break;
 

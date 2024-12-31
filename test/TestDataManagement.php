@@ -16,6 +16,7 @@ class TestDataManagement
             TestController::User->name => [],
             TestController::Member->name => [],
             TestController::Education->name => [],
+            TestController::Outreach->name => [],
         ];
         $this->insertTestData();
     }
@@ -59,7 +60,7 @@ class TestDataManagement
             ],
         ];
 
-        $educations = [
+        $education_items = [
             [
                 'title' => 'Title test',
                 'type' => 'MASTER',
@@ -67,6 +68,16 @@ class TestDataManagement
                 'referenceURL' => 'https://test.com',
                 'initYear' => '2020',
                 'endYear' => '2021',
+            ],
+        ];
+
+        $outreach_items = [
+            [
+                'title' => 'Title test',
+                'type' => 'PAGINA_INTERNA',
+                'description' => 'Test description',
+                'externalURL' => 'https://test.com',
+                'pageContent' => '<html><body><h1>Un ejemplo de test</h1></body></html>',
             ],
         ];
 
@@ -84,7 +95,12 @@ class TestDataManagement
             [
                 'controller' => TestController::Education,
                 'action' => 'add',
-                'payloads' => $educations,
+                'payloads' => $education_items,
+            ],
+            [
+                'controller' => TestController::Outreach,
+                'action' => 'add',
+                'payloads' => $outreach_items,
             ],
         ];
 

@@ -33,6 +33,10 @@ class BaseActionTest
         require_once __DIR__ . "/EducationActionTest.php";
         $educationActionTest = new EducationActionTest($this->validToken, $this->dataManagement->getTestData(TestController::Education));
         $educationActionTest->runTests();
+
+        require_once __DIR__ . "/OutreachActionTest.php";
+        $outreachActionTest = new OutreachActionTest($this->validToken, $this->dataManagement->getTestData(TestController::Outreach));
+        $outreachActionTest->runTests();
     }
 
     public static function runFieldValidationTest(bool $expectedOk, int $expectedHTTPCode, array $expectedCodes,

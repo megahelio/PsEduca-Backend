@@ -20,14 +20,14 @@ class EducationItemActionValidation {
      * Valida las reglas específicas según la acción proporcionada.
      *
      * @param Action $action La acción que se va a realizar posteriormente si las comprobaciones son correctas.
-     * @param EducationItem $educationItem El objeto del usuario.
+     * @param EducationItem $educationItem El objeto de la sección formación.
      * @return array Lista de errores encontrados.
      */
     public function validate(Action $action, EducationItem $educationItem): array {
 
         $this->errors = match ($action) {
 
-            Action::EDIT, Action::DELETE, Action::GET => $this->validateMemberExists($educationItem->getId()),
+            Action::EDIT, Action::DELETE, Action::GET => $this->validateEducationItemExists($educationItem->getId()),
 
             default => [],
         };
@@ -37,11 +37,11 @@ class EducationItemActionValidation {
 
 
     /**
-     * Comprueba si un usuario existe por su ID.
+     * Comprueba si un item de formación existe por su ID.
      *
      * @param int $educationItemId El ID del item de formación a verificar.
      */
-    private function validateMemberExists(int $educationItemId): array {
+    private function validateEducationItemExists(int $educationItemId): array {
         $errors = [];
         if (!$this->educationMapper->educationItemExists($educationItemId)) {
             $errors[] = 'ITEM_FORMACION_NO_ENCONTRADO_A_KO';

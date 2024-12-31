@@ -148,7 +148,8 @@ class ValidationTests
                 testUserGestor: $this->gestCatTestUser,
                 testUserUsuario: $this->usuarioPYPTestUser,
                 testMemberData: $this->dataManagement->getTestData(TestController::Member),
-                testEducationData: $this->dataManagement->getTestData(TestController::Education)
+                testEducationData: $this->dataManagement->getTestData(TestController::Education),
+                testOutreachData: $this->dataManagement->getTestData(TestController::Outreach)
         );
         $permissions->runTests();
 

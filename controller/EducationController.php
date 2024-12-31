@@ -23,7 +23,7 @@ class EducationController extends BaseController
             $initYear = parent::extractString($data, 'initYear');
             $endYear = parent::extractString($data, 'endYear');
 
-            $file = $this->extractFile();
+            $file = $this->extractFile('image');
 
             $educationItem = $this->educationService->add($type, $title, $description, $referenceURL, $initYear, $endYear, $file);
 
@@ -62,7 +62,7 @@ class EducationController extends BaseController
             $initYear = parent::extractString($data, 'initYear');
             $endYear = parent::extractString($data, 'endYear');
 
-            $file = $this->extractFile();
+            $file = $this->extractFile('image');
 
             $educationItem = $this->educationService->edit($id, $type, $title, $description, $referenceURL, $initYear, $endYear, $file);
 
@@ -148,13 +148,13 @@ class EducationController extends BaseController
         try {
             $educationItems = $this->educationService->list();
 
-            $membersData = [];
+            $educationItemsData = [];
             foreach ($educationItems as $educationItem) {
 
                 $fileName = $educationItem->getImage()?->getStorageFileName();
                 $imageURL = $this->generateEducationItemImageURL($fileName);
 
-                $membersData[] = array(
+                $educationItemsData[] = array(
                     "id" => $educationItem->getId(),
                     "type" => $educationItem->getType(),
                     "title" => $educationItem->getTitle(),
@@ -166,10 +166,10 @@ class EducationController extends BaseController
                 );
             }
 
-            if ($membersData == []) {
+            if ($educationItemsData == []) {
                 parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_EMPTY));
             } else {
-                parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), $membersData);
+                parent::generateHttpResponse(200, array(ResponseCodes::RECORDSET_DATA), $educationItemsData);
             }
 
         } catch (PDOException) {
@@ -191,9 +191,7 @@ class EducationController extends BaseController
             $image = "static/education_no_photo.jpg";
         }
 
-        $imageURN = (str_starts_with($image, '/') ? '' : '/').$image;
-
-        return $imageURN;
+        return (str_starts_with($image, '/') ? '' : '/').$image;
     }
 
 }

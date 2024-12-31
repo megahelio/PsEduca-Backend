@@ -37,6 +37,10 @@ class BaseFormatTest
         require_once __DIR__ . "/EducationFormatTest.php";
         $educationFormatTest = new EducationFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::Education));
         $educationFormatTest->runTests();
+
+        require_once __DIR__ . "/OutreachFormatTest.php";
+        $outreachFormatTest = new OutreachFormatTest($this->validToken, $this->dataManagement->getTestData(TestController::Outreach));
+        $outreachFormatTest->runTests();
     }
 
     public static function runFieldValidationTest(string $fieldName, string $action, array $testCases, string $url, array $headers): void

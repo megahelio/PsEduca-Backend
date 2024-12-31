@@ -9,6 +9,7 @@ enum TestController: string
     case Mail = "contact";
     case Member = "member";
     case Education = "education";
+    case Outreach = "outreach";
 }
 enum TestAction: string
 {
@@ -58,6 +59,13 @@ class PermissionTest
             TestAction::EDIT->name => TestUserRole::ADMIN_GLOBAL,
             TestAction::DELETE->name => TestUserRole::ADMIN_GLOBAL,
         ],
+        TestController::Outreach->name => [
+            TestAction::GET->name => TestUserRole::NO_AUTH,
+            TestAction::LIST->name => TestUserRole::NO_AUTH,
+            TestAction::ADD->name => TestUserRole::ADMIN_GLOBAL,
+            TestAction::EDIT->name => TestUserRole::ADMIN_GLOBAL,
+            TestAction::DELETE->name => TestUserRole::ADMIN_GLOBAL,
+        ],
     ];
 
     private static array $roleHierarchy = [
@@ -90,6 +98,11 @@ class PermissionTest
                             case TestController::Education->name:
                                 $payload = [
                                     'id' => $this->testEducationItemId
+                                ];
+                                break;
+                            case TestController::Outreach->name:
+                                $payload = [
+                                    'id' => $this->testOutreachItemId
                                 ];
                         }
                     } else {
@@ -154,7 +167,7 @@ class PermissionTest
     {
         // Validar código HTTP
         if ($expectedHTTPCode !== null) {
-            assertEquals($expectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado.");
+            assertEquals($expectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado1.");
         }
         foreach ($notExpectedHTTPCodes as $notExpectedHTTPCode) {
             assertNotEquals($notExpectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado.");
@@ -180,8 +193,9 @@ class PermissionTest
 
     private string $testMemberId;
     private string $testEducationItemId;
+    private string $testOutreachItemId;
 
-    public function __construct(?TestUser $testUserAdmin, ?TestUser $testUserGestor, ?TestUser $testUserUsuario, array $testMemberData, array $testEducationData)
+    public function __construct(?TestUser $testUserAdmin, ?TestUser $testUserGestor, ?TestUser $testUserUsuario, array $testMemberData, array $testEducationData, array $testOutreachData)
     {
         $this->testUserAdmin = $testUserAdmin;
         $this->testUserGestor = $testUserGestor;
@@ -193,5 +207,7 @@ class PermissionTest
         // Nos hace falta un item de formación para las pruebas
         $this->testEducationItemId = $testEducationData[0]['id'];
 
+        // Nos hace falta un item de divulgación para las pruebas
+        $this->testOutreachItemId = $testOutreachData[0]['id'];
     }
 }

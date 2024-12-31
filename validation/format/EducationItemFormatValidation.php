@@ -4,8 +4,9 @@ require_once __DIR__ . "/BaseFormatValidation.php";
 
 class EducationItemFormatValidation extends BaseFormatValidation {
 
-    public static array $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif', 'image/x-icon'];
     public static int $maxFileSize = 10485760; // 10 MB
+    private static array $allowedItemTypes = ['MASTER', 'DOCTORADO', 'CURSO'];
+
     public function __construct() {
         parent::__construct();
     }
@@ -30,11 +31,12 @@ class EducationItemFormatValidation extends BaseFormatValidation {
                 $this->validateLink($educationItem->getReferenceURL(), false);
                 $this->validateStartYear($educationItem->getInitYear());
                 $this->validateEndYear($educationItem->getEndYear(), $educationItem->getInitYear());
-                $this->validateType($educationItem->getType());
+                $this->validateType($educationItem->getType(), EducationItemFormatValidation::$allowedItemTypes);
                 $this->validateFile(
                     file: $educationItem->getImage(),
-                    allowedMimeTypes: EducationItemFormatValidation::$allowedMimeTypes,
-                    maxFileSize: EducationItemFormatValidation::$maxFileSize
+                    fileType: FileType::Image,
+                    maxFileSize: EducationItemFormatValidation::$maxFileSize,
+                    allowedEmpty: true
                 );
                 break;
 
@@ -54,15 +56,6 @@ class EducationItemFormatValidation extends BaseFormatValidation {
             $this->addError('TITULO_FORMACION_MAXIMO_F_KO');
         } elseif (!preg_match('/^[a-zA-Z0-9_\-áéíóúñÁÉÍÓÚÑªº,.\'" ]+$/', $name)) {
             $this->addError('TITULO_FORMACION_CARACTERES_F_KO');
-        }
-    }
-
-    // Validar tipo
-     private function validateType(?string $type): void
-    {
-        $validTypes = ['MASTER', 'DOCTORADO', 'CURSO'];
-        if (!in_array($type, $validTypes, true)) {
-            $this->addError('TIPO_F_KO');
         }
     }
 

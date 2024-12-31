@@ -1,4 +1,4 @@
-# EducationController - Apartado Quienes Somos
+# EducationController - Apartado Formación
 
 API destinada a la gestión CRUD de items de formación de la plataforma PsEduca.
 
@@ -323,7 +323,7 @@ A estos errores, hay que sumar los de formato y los de permisos (si procede).
 
 ##### Ejemplo de respuesta exitosa (status 200):
 
-Se ha eliminado correctamente el usuario. No se envía recurso, ya que se ha eliminado. El status más correcto sería 204,
+Se ha eliminado correctamente item de formación. No se envía recurso, ya que se ha eliminado. El status más correcto sería 204,
 pero ese código no permite enviar cuerpo en la respuesta y por ese motivo se decidió mantener el status 200.
 
 ~~~
@@ -411,11 +411,11 @@ Se requiere enviar los siguientes campos:
 
 A estos errores, hay que sumar los de formato y los de permisos (si procede).
 
-| Tipo   | Código                              | Descripción                                      |
-|--------|-------------------------------------|--------------------------------------------------|
-| Éxito  | `RECORDSET_DATA`                    | Datos recuperados correctamente.                 |
-| Error  | `ITEM_FORMACION_NO_ENCONTRADO_A_KO` | El usuario a recuperar no ha sido encontrado.    |
-| Error  | `INTERNAL_SERVER_ERROR_KO`          | Error interno del servidor (o de Base de datos). |
+| Tipo   | Código                              | Descripción                                             |
+|--------|-------------------------------------|---------------------------------------------------------|
+| Éxito  | `RECORDSET_DATA`                    | Datos recuperados correctamente.                        |
+| Error  | `ITEM_FORMACION_NO_ENCONTRADO_A_KO` | El item de formación a recuperar no ha sido encontrado. |
+| Error  | `INTERNAL_SERVER_ERROR_KO`          | Error interno del servidor (o de Base de datos).        |
 
 ##### Ejemplo de respuesta exitosa (status 200):
 

@@ -22,7 +22,7 @@ class MemberController extends BaseController
             $description = parent::extractString($data, 'description');
             $referenceURL = parent::extractString($data, 'referenceURL');
 
-            $file = $this->extractFile();
+            $file = $this->extractFile('image');
 
             $member = $this->membersService->add($name, $email, $description, $referenceURL, $file);
 
@@ -58,7 +58,7 @@ class MemberController extends BaseController
             $description = parent::extractString($data, 'description');
             $referenceURL = parent::extractString($data, 'referenceURL');
 
-            $file = $this->extractFile();
+            $file = $this->extractFile('image');
 
             $member = $this->membersService->edit($id, $name, $email, $description, $referenceURL, $file);
 

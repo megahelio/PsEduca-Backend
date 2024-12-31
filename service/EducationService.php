@@ -84,7 +84,7 @@ class EducationService
      */
     public function get(?string $id): EducationItem
     {
-        Validator::validate(new EducationItem($id), Action::GET);
+        Validator::validate(new EducationItem(id: $id), Action::GET);
 
         $educationItem = $this->educationMapper->findById($id);
 

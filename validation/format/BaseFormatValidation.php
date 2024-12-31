@@ -1,9 +1,56 @@
 <?php
 
+enum FileType: string
+{
+    case Image = "IMAGEN";
+    case Document = "DOCUMENTO";
+    case All = "FICHERO";
+}
+
 class BaseFormatValidation
 {
 
     private array $errors;
+    private static array $allowedImageMimeTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/svg+xml',
+        'image/webp',
+        'image/avif',
+        'image/x-icon'
+    ];
+    private static array $allowedDocumentMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/zip',
+        'application/x-rar-compressed',
+        'application/x-7z-compressed',
+        'application/x-tar',
+        'application/x-gzip',
+        'application/x-bzip2',
+        'application/x-xz',
+        'application/x-rar'
+    ];
+//    private static array $allowedGenericMimeTypes = [
+//        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp', 'image/avif', 'image/x-icon',
+//        'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+//        'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//        'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+//        'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar',
+//        'application/x-gzip', 'application/x-bzip2', 'application/x-xz', 'application/x-rar',
+//
+//        'application/json', 'application/xml',
+//        'text/plain', 'text/html', 'text/css', 'text/javascript', 'text/csv', 'text/calendar', 'text/markdown',
+//        'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/midi', 'audio/aac', 'audio/x-flac', 'audio/x-wav', 'audio/x-midi',
+//        'video/mp4', 'video/x-msvideo', 'video/x-matroska', 'video/quicktime', 'video/webp', 'video/ogg',
+//    ];
 
     public function __construct() {
         $this->errors = [];
@@ -51,17 +98,25 @@ class BaseFormatValidation
         }
     }
 
-    // Validar imagen
-    protected function validateFile(?File $file, array $allowedMimeTypes, int $maxFileSize): void
+    // Validar fichero
+    protected function validateFile(?File $file, FileType $fileType, int $maxFileSize, bool $allowedEmpty): void
     {
         if ($file) {
             if ($file->getFileSize() > $maxFileSize) {
-                $this->addError('FICHERO_TAMAÑO_F_KO');
+                $this->addError($fileType->value.'_TAMAÑO_F_KO');
             }
 
-            if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
-                $this->addError('FICHERO_FORMATO_F_KO');
+            $allowedMimeTypes = match ($fileType) {
+                FileType::Image => self::$allowedImageMimeTypes,
+                FileType::Document => self::$allowedDocumentMimeTypes,
+                FileType::All => true,
+            };
+
+            if (!$allowedMimeTypes && !in_array($file->getMimeType(), $allowedMimeTypes)) {
+                $this->addError($fileType->value.'_FORMATO_F_KO');
             }
+        } elseif (!$allowedEmpty) {
+            $this->addError($fileType->value.'_OBLIGATORIO_F_KO');
         }
     }
 
@@ -91,6 +146,15 @@ class BaseFormatValidation
                 $this->addError('DESCRIPCION_CARACTERES_F_KO');
             }
         }
+    }
+
+    // Validar tipo
+    protected function validateType(?string $type, array $validTypes): bool {
+        if (!in_array($type, $validTypes, true)) {
+            $this->addError('TIPO_F_KO');
+            return false;
+        }
+        return true;
     }
 
 }

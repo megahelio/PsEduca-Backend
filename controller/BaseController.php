@@ -25,13 +25,13 @@ class BaseController {
     /**
      * @return File|null
      */
-    protected function extractFile(): ?File
+    protected function extractFile(string $form_data_name): ?File
     {
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $fileTmpPath = $_FILES['image']['tmp_name'];// Ruta temporal del archivo
-            $fileName = $_FILES['image']['name'];// Nombre original del archivo
-            $fileSize = $_FILES['image']['size'];// Tamaño del archivo
-            $fileType = $_FILES['image']['type'];// Tipo MIME del archivo
+        if (isset($_FILES[$form_data_name]) && $_FILES[$form_data_name]['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES[$form_data_name]['tmp_name'];// Ruta temporal del archivo
+            $fileName = $_FILES[$form_data_name]['name'];// Nombre original del archivo
+            $fileSize = $_FILES[$form_data_name]['size'];// Tamaño del archivo
+            $fileType = $_FILES[$form_data_name]['type'];// Tipo MIME del archivo
             return new File($fileTmpPath, $fileName, null, $fileSize, $fileType);
         } else {
             return null;
