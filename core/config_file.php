@@ -4,7 +4,7 @@ const SERVER_URL = "http://localhost:80/PsEduca-Backend";
 const JWT_KEY = "jwt_key";
 
 // Database settings
-const DB_HOST = "192.168.1.254";
+const DB_HOST = "localhost";//"192.168.1.254";
 const DB_PORT = "3306";
 const DB_NAME = "pseduca";
 const DB_USER = "pseduca";
@@ -17,6 +17,9 @@ const MAIL_HOST = 'smtp.ethereal.email';
 const MAIL_PORT = 587;
 
 const CONTACT_DESTINATION_DIR = 'correoDeSenhoran@uvigo.es';
+
+// File upload settings
+const UPLOAD_FOLDER = "uploads/";
 
 //const MAIL_USER_NAME = 'pseduca@outlook.es';
 //const MAIL_PASSWORD = 'EseiSoftwareSL2024';

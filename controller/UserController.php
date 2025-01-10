@@ -23,7 +23,7 @@ class UserController extends BaseController {
     {
         try {
 
-            $userId = $data['id'] ?? null;
+            $userId = parent::extractString($data, 'id');
 
             $user = $this->userService->get($userId);
 
@@ -76,10 +76,10 @@ class UserController extends BaseController {
     {
         try {
 
-            $userName = $data['userName'] ?? null;
-            $fullName = $data['fullName'] ?? null;
-            $password = $data['password'] ?? null;
-            $strRole = $data['role'] ?? null;
+            $userName = parent::extractString($data, 'userName');
+            $fullName = parent::extractString($data, 'fullName');
+            $password = parent::extractString($data, 'password');
+            $strRole = parent::extractString($data, 'role');
 
 			$newUser = $this->userService->add($userName, $fullName, $password, $strRole);
 
@@ -103,11 +103,11 @@ class UserController extends BaseController {
     {
         try {
 
-            $id = $data['id'] ?? null;
-            $userName = $data['userName'] ?? null;
-            $fullName = $data['fullName'] ?? null;
-            $password = $data['password'] ?? null;
-            $strRole = $data['role'] ?? null;
+            $id = parent::extractString($data, 'id');
+            $userName = parent::extractString($data, 'userName');
+            $fullName = parent::extractString($data, 'fullName');
+            $password = parent::extractString($data, 'password');
+            $strRole = parent::extractString($data, 'role');
 
             $user = $this->userService->edit($id, $userName, $fullName, $password, $strRole);
 
@@ -133,7 +133,7 @@ class UserController extends BaseController {
     {
 		try {
 
-            $id = $data['id'] ?? null;
+            $id = parent::extractString($data, 'id');
 
             $this->userService->delete($id);
 

@@ -29,6 +29,7 @@ class UserService {
     public function login(?string $userName, ?string $userPassword): array
     {
         $user = new User(null, $userName, $userPassword, null, null);
+
         Validator::validate($user, Action::LOGIN);
 
         // Get the user info from the database
@@ -69,10 +70,16 @@ class UserService {
      * @throws ValidationException
      * @throws ReflectionException
      */
-    public function add(?string $username, ?string $fullName, ?string $password, ?string $strRole): User
+    public function add(?string $userName, ?string $fullName, ?string $password, ?string $strRole): User
     {
 
-        $user = new User(null, $username, $password, $strRole, $fullName);
+        $user = new User(
+            id: null,
+            userName: $userName == "" ? null : $userName,
+            passwd: $password == "" ? null : $password,
+            role: $strRole == "" ? null : $strRole,
+            fullName: $fullName == "" ? null : $fullName
+        );
 
         Validator::validate($user, Action::ADD);
 
@@ -89,10 +96,10 @@ class UserService {
         $user = $this->get($id);
 
         // Solo se modifican los campos que se envían. Si no se envía un campo, se mantiene el valor actual.
-        if ($userName != null) $user->setUserName($userName);
-        if ($fullName != null) $user->setFullName($fullName);
-        $user->setPassword($password); // Salvo para auth, este campo es nulo, por lo que nos podemos ahorrar la comprobación
-        if ($strRole != null) $user->setRole($strRole);
+        if (!is_null($userName)) $user->setUserName($userName == "" ? null : $userName);
+        if (!is_null($fullName)) $user->setFullName($fullName == "" ? null : $fullName);
+        if (!is_null($password)) $user->setPassword($password == "" ? null : $password);
+        if (!is_null($strRole)) $user->setRole($strRole == "" ? null : $strRole);
 
         Validator::validate($user, Action::EDIT);
 
@@ -117,7 +124,7 @@ class UserService {
     }
 
     /**
-     * @param string|null $userId el id del usuario a obtener
+     * @param string|null $userId id del usuario a obtener
      * @return User
      * @throws NotFoundException
      * @throws ReflectionException

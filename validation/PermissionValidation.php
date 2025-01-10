@@ -14,13 +14,27 @@ class PermissionValidation
         Model::Mail->name => [
             Action::SEND->name => true
         ],
-//        'Member' => [
-//            Action::GET->name => true,
-//            Action::LIST->name => true,
-//            Action::ADD->name => UserRole::ADMIN_GLOBAL,
-//            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
-//            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
-//        ],
+        Model::Member->name => [
+            Action::GET->name => true,
+            Action::LIST->name => true,
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+        ],
+        Model::EducationItem->name => [
+            Action::GET->name => true,
+            Action::LIST->name => true,
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+        ],
+        Model::OutreachItem->name => [
+            Action::GET->name => true,
+            Action::LIST->name => true,
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+        ],
     ];
 
     private static array $roleHierarchy = [
@@ -45,6 +59,7 @@ class PermissionValidation
      */
     public function validate(Model $model, Action $action): array
     {
+
         if (!array_key_exists($model->name, self::$permissions)) {
             throw new Exception("Model not found in PermissionValidation");
         }

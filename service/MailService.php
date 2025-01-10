@@ -5,8 +5,6 @@ require_once __DIR__ . "/../core/mail/MailSender.php";
 
 class MailService
 {
-
-
     /**
      * @throws ReflectionException
      * @throws ValidationException
