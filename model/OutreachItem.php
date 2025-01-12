@@ -72,7 +72,7 @@ class OutreachItem
     // Variables de control para cambio de imagen
 
     /**
-     * The new image of the member
+     * The new image of the outreach item
      * @var File|null
      */
     private ?File $newImage;

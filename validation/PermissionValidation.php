@@ -42,12 +42,19 @@ class PermissionValidation
             Action::EDIT->name => UserRole::GESTOR_CATALOGO,
             Action::DELETE->name => UserRole::GESTOR_CATALOGO,
         ],
+        Model::PyPItem->name => [
+            Action::GET->name => UserRole::USUARIO_PYP,
+            Action::LIST->name => UserRole::USUARIO_PYP,
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+        ]
     ];
 
     private static array $roleHierarchy = [
         UserRole::ADMIN_GLOBAL->name => [UserRole::ADMIN_GLOBAL], // Admin global puede hacer cualquier cosa
         UserRole::GESTOR_CATALOGO->name => [UserRole::GESTOR_CATALOGO, UserRole::ADMIN_GLOBAL], // Gestor y admin global
-        UserRole::USUARIO_PYP->name => [UserRole::USUARIO_PYP, UserRole::ADMIN_GLOBAL], // Usuario y admin global
+        UserRole::USUARIO_PYP->name => [UserRole::USUARIO_PYP, UserRole::GESTOR_CATALOGO, UserRole::ADMIN_GLOBAL], // Usuario y admin global
     ];
 
     private array $errors;

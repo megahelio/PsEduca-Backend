@@ -11,6 +11,7 @@ enum Model: string
     case EducationItem = "EducationItem";
     case OutreachItem = "OutreachItem";
     case CatalogueItem = "CatalogueItem";
+    case PyPItem = "PyPItem";
 }
 
 enum Action

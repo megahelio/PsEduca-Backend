@@ -88,7 +88,7 @@ class File
      * @return File The File instance.
      * @throws FileException If the file does not exist or cannot be read.
      */
-    public static function fromExistingFile(string $fileName, string $id = null, string $description = null): File
+        public static function fromExistingFile(string $fileName, string $id = null, string $description = null): File
     {
         $filePath = UPLOAD_FOLDER . $fileName;
         // Verificar si el archivo existe

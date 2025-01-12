@@ -121,12 +121,12 @@ class BaseFormatValidation
     }
 
     // Validar link de recurso (URL)
-    protected function validateLink(?string $link, bool $allowedEmpty): void
+    protected function validateLink(?string $link, bool $allowedEmpty, int $maxLength = 254): void
     {
         if (!$allowedEmpty || !empty($link)) {
             if (strlen($link ?? "") < 4) {
                 $this->addError('LINK_MINIMO_F_KO');
-            } elseif (strlen($link) > 254) {
+            } elseif (strlen($link) > $maxLength) {
                 $this->addError('LINK_MAXIMO_F_KO');
             } elseif (!filter_var($link, FILTER_VALIDATE_URL)) {
                 $this->addError('LINK_INVALIDO_F_KO');

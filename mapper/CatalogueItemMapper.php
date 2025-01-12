@@ -441,7 +441,8 @@ class CatalogueItemMapper {
         ));
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM relacion_catalogo_{$filterType->value} WHERE nombre = :nombre");
         $stmt->execute(array(':nombre' => $filterValue));
-        if ($stmt->fetchColumn() == 0) {
+        // Por el momento no se va a eliminar el filtro de la BBDD si no se usa en ningún item (salvo etiquetas)
+        if ($filterType == FilterType::Tags && $stmt->fetchColumn() == 0) {
             $this->removeUnusedFilter($filterType, $filterValue);
         }
     }

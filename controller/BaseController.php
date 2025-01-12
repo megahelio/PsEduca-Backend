@@ -4,6 +4,7 @@ use JetBrains\PhpStorm\NoReturn;
 
 require_once(__DIR__."/../model/User.php");
 require_once(__DIR__ . "/../service/UserService.php");
+require_once(__DIR__ . "/../model/File.php");
 
 /**
 * Class BaseController

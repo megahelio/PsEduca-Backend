@@ -179,6 +179,7 @@ ALTER TABLE `relacion_catalogo_formatos`
 ALTER TABLE `relacion_catalogo_tipos_recurso`
     ADD CONSTRAINT `relacion_catalogo_tipos_recurso_ibfk_1` FOREIGN KEY (`nombre`) REFERENCES `tipos_recurso_items_catalogo` (`nombre`),
     ADD CONSTRAINT `relacion_catalogo_tipos_recurso_ibfk_2` FOREIGN KEY (`id_item`) REFERENCES `items_catalogo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 -- Inserción de datos iniciales en las tablas anexas a catálogo
 
 INSERT INTO `areas_items_catalogo` (`nombre`) VALUES ('Aprendizaje');
@@ -194,4 +195,20 @@ INSERT INTO formatos_items_catalogo (`nombre`) VALUES ('Online');
 INSERT INTO `aplicacion_items_catalogo` (`nombre`) VALUES ('Individual');
 INSERT INTO `aplicacion_items_catalogo` (`nombre`) VALUES ('Colectiva');
 
+-- Apartado Pruebas y programas
+
+CREATE TABLE `items_pyp` (
+                             `id` int(11) NOT NULL,
+                             `titulo` varchar(255) NOT NULL,
+                             `descripcion` text DEFAULT NULL,
+                             `imagen` varchar(255) DEFAULT NULL,
+                             `link_externo` varchar(1024) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+ALTER TABLE `items_pyp`
+    ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `items_pyp`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

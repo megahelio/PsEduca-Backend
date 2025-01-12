@@ -47,11 +47,9 @@ class CatalogueController extends BaseController
 
         } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
-        } catch (PDOException $e) {
-            echo $e;
+        } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -96,11 +94,9 @@ class CatalogueController extends BaseController
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (NotFoundException) {
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
-        } catch (PDOException $e) {
-            echo $e;
+        } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
