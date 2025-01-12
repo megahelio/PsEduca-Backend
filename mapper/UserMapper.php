@@ -1,5 +1,4 @@
 <?php
-// file: model/UserMapper.php
 
 require_once(__DIR__."/../core/PDOConnection.php");
 

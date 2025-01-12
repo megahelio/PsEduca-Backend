@@ -65,8 +65,7 @@ function run(): void {
 
 		$restController->$actionName($_POST);
 
-	} catch (PDOException $ex) {
-        echo $ex;
+	} catch (PDOException) {
         http_response_code(503);
         $response = [
             'ok' => false,
@@ -75,7 +74,7 @@ function run(): void {
         header('Content-Type: application/json');
         die(json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
-    } catch (Exception $ex) {
+    } catch (Exception) {
 		http_response_code(500);
         $response = [
             'ok' => false,

@@ -35,6 +35,13 @@ class PermissionValidation
             Action::EDIT->name => UserRole::ADMIN_GLOBAL,
             Action::DELETE->name => UserRole::ADMIN_GLOBAL,
         ],
+        Model::CatalogueItem->name => [
+            Action::GET->name => true,
+            Action::LIST->name => true,
+            Action::ADD->name => UserRole::GESTOR_CATALOGO,
+            Action::EDIT->name => UserRole::GESTOR_CATALOGO,
+            Action::DELETE->name => UserRole::GESTOR_CATALOGO,
+        ],
     ];
 
     private static array $roleHierarchy = [

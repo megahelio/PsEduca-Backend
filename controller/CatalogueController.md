@@ -120,16 +120,16 @@ Se requiere enviar los siguientes campos:
 - `monthMinAge` (string, voluntario): Edad mínima en meses del item de catálogo.
 - `yearMaxAge` (string, voluntario): Edad máxima en años del item de catálogo.
 - `monthMaxAge` (string, voluntario): Edad máxima en meses del item de catálogo.
-- `authors` (string, voluntario): Autores del item de catálogo.
+- `authors` (string, obligatorio): Autores del item de catálogo.
 - `time` (string, obligatorio): Tiempo asociado al item de catálogo.
 - `description` (string, obligatorio): Descripción del item de catálogo.
 - `note` (string, voluntario): Nota adicional del item de catálogo.
 - `image` (file, voluntario): Imagen del item de catálogo. Si no se indica, se asigna una por defecto. Ojo, por problemas de compatibilidad con form-data, una vez se asigne una imagen, no se podrá eliminar, solo se podrá cambiar.
-- `areas` (array de strings, voluntario): Áreas asociadas al item de catálogo.
+- `areas` (array de strings, obligatorio): Áreas asociadas al item de catálogo.
 - `tags` (array de strings, voluntario): Etiquetas asociadas al item de catálogo.
-- `resourceTypes` (array de strings, voluntario): Tipos de recursos asociados al item de catálogo.
-- `formats` (array de strings, voluntario): Formatos asociados al item de catálogo.
-- `applicationModes` (array de strings, voluntario): Modos de aplicación asociados al item de catálogo.
+- `resourceTypes` (array de strings, obligatorio): Tipos de recursos asociados al item de catálogo.
+- `formats` (array de strings, obligatorio): Formatos asociados al item de catálogo.
+- `applicationModes` (array de strings, obligatorio): Modos de aplicación asociados al item de catálogo.
 
 #### Response
 
@@ -148,7 +148,41 @@ Se ha añadido correctamente el item de catálogo. Esta respueta coincide (salvo
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "id": 4,
+        "acronym": " IF1",
+        "name": " Item formación 1",
+        "yearMinAge": "1",
+        "monthMinAge": "01",
+        "yearMaxAge": "12",
+        "monthMaxAge": "12",
+        "imageURL": "\/static\/catalogue_no_photo.jpg",
+        "authors": "Author 1",
+        "time": "-1",
+        "description": "Los detalles convenientes sobre el item 1.",
+        "note": "Nota sobre el item 1",
+        "files": [],
+        "links": [],
+        "areas": [
+            "Desarrollo"
+        ],
+        "tags": [],
+        "resourceTypes": [
+            "Type 1, Type 2"
+        ],
+        "formats": [
+            "Papel, online"
+        ],
+        "applicationModes": [
+            "Individual"
+        ]
+    }
+}
 
 ~~~
 
@@ -158,8 +192,16 @@ En esta respuesta se han enviado datos que no cumplen con el formato establecido
 
 ~~~
 
-<PENDIENTE>
-
+{
+    "ok": false,
+    "code": [
+        "ACRONIMO_INVALIDO_F_KO",
+        "EDAD_MES_MIN_MINIMO_F_KO",
+        "TIEMPO_MINIMO_F_KO",
+        "DESCRIPCION_MINIMO_F_KO",
+        "ETIQUETA_INVALIDO_F_KO"
+    ]
+}
 
 ~~~
 
@@ -220,15 +262,15 @@ Se requiere enviar los siguientes campos:
 Además, se pueden enviar los siguientes campos, tanto si se desean cambiar, como si se envían iguales y no se realizan
 cambios:
 
-- `acronym` (string, obligatorio): Acrónimo del item de catálogo.
-- `name` (string, obligatorio): Nombre del item de catálogo.
+- `acronym` (string, voluntario): Acrónimo del item de catálogo.
+- `name` (string, voluntario): Nombre del item de catálogo.
 - `yearMinAge` (string, voluntario): Edad mínima en años del item de catálogo.
 - `monthMinAge` (string, voluntario): Edad mínima en meses del item de catálogo.
 - `yearMaxAge` (string, voluntario): Edad máxima en años del item de catálogo.
 - `monthMaxAge` (string, voluntario): Edad máxima en meses del item de catálogo.
 - `authors` (string, voluntario): Autores del item de catálogo.
-- `time` (string, obligatorio): Tiempo asociado al item de catálogo.
-- `description` (string, obligatorio): Descripción del item de catálogo.
+- `time` (string, voluntario): Tiempo asociado al item de catálogo.
+- `description` (string, voluntario): Descripción del item de catálogo.
 - `note` (string, voluntario): Nota adicional del item de catálogo.
 - `image` (file, voluntario): Imagen del item de catálogo. Si no se indica, se asigna una por defecto. Ojo, por problemas de compatibilidad con form-data, una vez se asigne una imagen, no se podrá eliminar, solo se podrá cambiar.
 - `areas` (array de strings, voluntario): Áreas asociadas al item de catálogo.
@@ -255,7 +297,43 @@ Se ha editado correctamente el item de catálogo. Esta respueta coincide con la 
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "id": 2,
+        "acronym": " IF1n",
+        "name": " Item formación 1n",
+        "yearMinAge": "11",
+        "monthMinAge": "01",
+        "yearMaxAge": "12",
+        "monthMaxAge": "12",
+        "imageURL": "\/uploads\/6782eae96f3f06.86759321.jpg",
+        "authors": "Author 1",
+        "time": "1",
+        "description": "Los detalles convenientes sobre el item 1.n",
+        "note": "Nota sobre el item 1n",
+        "files": [],
+        "links": [],
+        "areas": [
+            "Desarrollon"
+        ],
+        "tags": [
+            "Tag 1, Tag 2n"
+        ],
+        "resourceTypes": [
+            "Type 1, Type 2n"
+        ],
+        "formats": [
+            "Papel, Online"
+        ],
+        "applicationModes": [
+            "Individual"
+        ]
+    }
+}
 
 ~~~
 
@@ -265,7 +343,14 @@ En esta respuesta se han enviado datos que no cumplen con el formato establecido
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": false,
+    "code": [
+        "ACRONIMO_INVALIDO_F_KO",
+        "EDAD_MES_MIN_MINIMO_F_KO",
+        "TIEMPO_CARACTERES_F_KO"
+    ]
+}
 
 ~~~
 
@@ -290,7 +375,12 @@ Error provocado por no existir un item de catálogo con el número de item de ca
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": false,
+    "code": [
+        "ITEM_DIVULGACION_NO_ENCONTRADO_A_KO"
+    ]
+}
 
 ~~~
 
@@ -432,7 +522,58 @@ Se ha encontrado el item de catálogo. Esta respueta coincide con la de **add** 
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "id": "3",
+        "acronym": " IF1",
+        "name": " Item formación 1",
+        "yearMinAge": "1",
+        "monthMinAge": "1",
+        "yearMaxAge": "12",
+        "monthMaxAge": "12",
+        "imageURL": "\/static\/catalogue_no_photo.jpg",
+        "authors": "Author 1",
+        "time": "1",
+        "description": "Los detalles convenientes sobre el item 1.",
+        "note": "Nota sobre el item 1",
+        "files": [
+            {
+                "id": "12",
+                "name": "Nombre del fichero apropiado",
+                "uri": "\/uploads\/6782f69e02c299.02202586.pdf"
+            }
+        ],
+        "links": [
+            {
+                "id": "1",
+                "name": "Pagina referenciada STACK OVERFLOW",
+                "url": "https:\/\/stackoverflow.com\/questions\/15490913\/cant-start-mysql-in-xampp"
+            },
+            {
+                "id": "3",
+                "name": "Pagina referenciada STACK OVERFLOW",
+                "url": "https:\/\/europa.eu"
+            }
+        ],
+        "areas": [
+            "Desarrollo"
+        ],
+        "tags": [],
+        "resourceTypes": [
+            "Type 1, Type 2"
+        ],
+        "formats": [
+            "Papel, online"
+        ],
+        "applicationModes": [
+            "Individual"
+        ]
+    }
+}
 
 ~~~
 
@@ -519,7 +660,118 @@ Se lista todos los items de catálogo existentes.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": [
+        {
+            "id": "3",
+            "acronym": " IF1",
+            "name": " Item formación 1",
+            "yearMinAge": "1",
+            "monthMinAge": "1",
+            "yearMaxAge": "12",
+            "monthMaxAge": "12",
+            "imageURL": "\/static\/catalogue_no_photo.jpg",
+            "authors": "Author 1",
+            "time": "1",
+            "description": "Los detalles convenientes sobre el item 1.",
+            "note": "Nota sobre el item 1",
+            "files": [
+                {
+                    "id": "12",
+                    "name": "Nombre del fichero apropiado",
+                    "uri": "\/uploads\/6782f69e02c299.02202586.pdf"
+                }
+            ],
+            "links": [
+                {
+                    "id": "1",
+                    "name": "Pagina referenciada STACK OVERFLOW",
+                    "url": "https:\/\/stackoverflow.com\/questions\/15490913\/cant-start-mysql-in-xampp"
+                },
+                {
+                    "id": "3",
+                    "name": "Pagina referenciada STACK OVERFLOW",
+                    "url": "https:\/\/europa.eu"
+                }
+            ],
+            "areas": [
+                "Desarrollo"
+            ],
+            "tags": [],
+            "resourceTypes": [
+                "Type 1, Type 2"
+            ],
+            "formats": [
+                "Papel, online"
+            ],
+            "applicationModes": [
+                "Individual"
+            ]
+        },
+        {
+            "id": "4",
+            "acronym": " IF1",
+            "name": " Item formación 1",
+            "yearMinAge": "1",
+            "monthMinAge": "1",
+            "yearMaxAge": "12",
+            "monthMaxAge": "12",
+            "imageURL": "\/static\/catalogue_no_photo.jpg",
+            "authors": "Author 1",
+            "time": "-1",
+            "description": "Los detalles convenientes sobre el item 1.",
+            "note": "Nota sobre el item 1",
+            "files": [],
+            "links": [],
+            "areas": [
+                "Desarrollo"
+            ],
+            "tags": [],
+            "resourceTypes": [
+                "Type 1, Type 2"
+            ],
+            "formats": [
+                "Papel, online"
+            ],
+            "applicationModes": [
+                "Individual"
+            ]
+        },
+        {
+            "id": "5",
+            "acronym": " IF1``´´",
+            "name": " Item formación 1",
+            "yearMinAge": "1",
+            "monthMinAge": "1",
+            "yearMaxAge": "12",
+            "monthMaxAge": "12",
+            "imageURL": "\/static\/catalogue_no_photo.jpg",
+            "authors": "Author 1",
+            "time": "-1",
+            "description": "Los detalles convenientes sobre el item 1.",
+            "note": "Nota sobre el item 1",
+            "files": [],
+            "links": [],
+            "areas": [
+                "Desarrollo"
+            ],
+            "tags": [],
+            "resourceTypes": [
+                "Type 1, Type 2"
+            ],
+            "formats": [
+                "Papel, online"
+            ],
+            "applicationModes": [
+                "Individual"
+            ]
+        }
+    ]
+}
 
 ~~~
 
@@ -597,20 +849,34 @@ Se ha añadido correctamente el fichero al item de catálogo.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "id": "12",
+        "name": "Nombre del fichero apropiado",
+        "uri": "/uploads/6782f69e02c299.02202586.pdf"
+    }
+}
 
 ~~~
 
-##### Ejemplo de respuesta con error (status 400):
+[//]: # (##### Ejemplo de respuesta con error &#40;status 400&#41;:)
 
-En esta respuesta se han enviado datos que no cumplen con el formato establecido.
+[//]: # ()
+[//]: # (En esta respuesta se han enviado datos que no cumplen con el formato establecido.)
 
-~~~
+[//]: # ()
+[//]: # (~~~)
 
-<PENDIENTE>
+[//]: # ()
+[//]: # (<PENDIENTE>)
 
-
-~~~
+[//]: # ()
+[//]: # ()
+[//]: # (~~~)
 
 ##### Ejemplo de respuesta con error (status 503 o status 500):
 
@@ -687,7 +953,17 @@ Se ha añadido correctamente el enlace al item de catálogo.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "id": "2",
+        "name": "Pagina referenciada STACK OVERFLOW",
+        "url": "https://stackoverflow.com/questions/15490913/cant-start-mysql-in-xampp"
+    }
+}
 
 ~~~
 
@@ -697,7 +973,12 @@ En esta respuesta se han enviado datos que no cumplen con el formato establecido
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": false,
+    "code": [
+        "LINK_INVALIDO_F_KO"
+    ]
+}
 
 ~~~
 
@@ -793,7 +1074,12 @@ número positivo.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": false,
+    "code": [
+        "FICHERO_NO_ENCONTRADO_A_KO"
+    ]
+}
 
 ~~~
 
@@ -889,7 +1175,12 @@ número positivo.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": false,
+    "code": [
+        "ID_INVALIDO_F_KO"
+    ]
+}
 
 ~~~
 
@@ -921,6 +1212,20 @@ Error provocado por no existir un item de catálogo con el id enviado.
     ]
 }
 
+~~~
+
+##### Ejemplo de respuesta con error (status 400):
+
+Error provocado por no existir el enlace con el id enviado.
+
+~~~
+
+{
+    "ok": false,
+    "code": [
+        "ENLACE_NO_ENCONTRADO_A_KO"
+    ]
+}
 ~~~
 
 ### List Available Filters
@@ -957,7 +1262,6 @@ No se requiere enviar campos.
 | Tipo   | Código                     | Descripción                                             |
 |--------|----------------------------|---------------------------------------------------------|
 | Éxito  | `RECORDSET_DATA`           | Datos recuperados correctamente.                        |
-| Éxito  | `RECORDSET_EMPTY`          | No aplica recuperar datos. No hay items de ningún tipo. |
 | Error  | `INTERNAL_SERVER_ERROR_KO` | Error interno del servidor (o de Base de datos).        |
 
 ##### Ejemplo de respuesta exitosa (status 200):
@@ -966,7 +1270,32 @@ Se lista todas las clasificaciones existentes.
 
 ~~~
 
-<PENDIENTE>
+{
+    "ok": true,
+    "code": [
+        "RECORDSET_DATA"
+    ],
+    "resource": {
+        "areas": [
+            "Aprendizaje",
+            "Desarrollo",
+            "NEAE (Necesidades Específicas de Apoyo Educativo)"
+        ],
+        "tags": [],
+        "resourceTypes": [
+            "Evaluación",
+            "Intervención"
+        ],
+        "formats": [
+            "Online",
+            "Papel"
+        ],
+        "applicationModes": [
+            "Colectiva",
+            "Individual"
+        ]
+    }
+}
 
 ~~~
 

@@ -28,14 +28,15 @@ class CatalogueController extends BaseController
             $note = parent::extractString($data, 'note');
             $image = $this->extractFile('image');
 
+            // Los ficheros y enlaces se gestionan por separado en la api habilitada para ello
             $files = null;//$this->extractFileArray('files');
             $links = null;//$this->extractStringsArray($data, 'links');
 
-            $areas = $this->extractStringsArray($data, 'areas');
-            $tags = $this->extractStringsArray($data, 'tags');
-            $resourceTypes = $this->extractStringsArray($data, 'resourceTypes');
-            $formats = $this->extractStringsArray($data, 'formats');
-            $applicationModes = $this->extractStringsArray($data, 'applicationModes');
+            $areas = $this->extractStringList($data, 'areas');
+            $tags = $this->extractStringList($data, 'tags');
+            $resourceTypes = $this->extractStringList($data, 'resourceTypes');
+            $formats = $this->extractStringList($data, 'formats');
+            $applicationModes = $this->extractStringList($data, 'applicationModes');
 
             $catalogueItem = $this->catalogueService->add($acronym, $name, $image, $yearMinAge, $monthMinAge, $yearMaxAge,
                 $monthMaxAge, $authors, $time, $description, $note, $areas, $tags, $resourceTypes,
@@ -46,9 +47,11 @@ class CatalogueController extends BaseController
 
         } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
-        } catch (PDOException) {
+        } catch (PDOException $e) {
+            echo $e;
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            echo $e;
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -72,14 +75,15 @@ class CatalogueController extends BaseController
             $note = parent::extractString($data, 'note');
             $image = $this->extractFile('image');
 
-            $files = $this->extractFileArray('files');
-            $links = $this->extractFileArray('documents');
+            // Los ficheros y enlaces se gestionan por separado en la api habilitada para ello
+            $files = null;//$this->extractFileArray('files');
+            $links = null;//$this->extractStringsArray($data, 'links');
 
-            $areas = $this->extractStringsArray($data, 'areas');
-            $tags = $this->extractStringsArray($data, 'tags');
-            $resourceTypes = $this->extractStringsArray($data, 'resourceTypes');
-            $formats = $this->extractStringsArray($data, 'formats');
-            $applicationModes = $this->extractStringsArray($data, 'applicationModes');
+            $areas = $this->extractStringList($data, 'areas');
+            $tags = $this->extractStringList($data, 'tags');
+            $resourceTypes = $this->extractStringList($data, 'resourceTypes');
+            $formats = $this->extractStringList($data, 'formats');
+            $applicationModes = $this->extractStringList($data, 'applicationModes');
 
             $catalogueItem = $this->catalogueService->edit($id, $acronym, $name, $image, $yearMinAge, $monthMinAge, $yearMaxAge,
                 $monthMaxAge, $authors, $time, $description, $note, $areas, $tags, $resourceTypes,
@@ -92,9 +96,11 @@ class CatalogueController extends BaseController
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (NotFoundException) {
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
-        } catch (PDOException) {
+        } catch (PDOException $e) {
+            echo $e;
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            echo $e;
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -193,29 +199,18 @@ class CatalogueController extends BaseController
     }
 
     /**
-     * @param $catalogueItem
+     * @param CatalogueItem $catalogueItem
      * @return array
      */
-    private function generateJSONFromCatalogueItem($catalogueItem): array
+    private function generateJSONFromCatalogueItem(CatalogueItem $catalogueItem): array
     {
         $imageName = $catalogueItem->getImage()?->getStorageFileName();
         $imageURL = $this->generateCatalogueItemImageURL($imageName);
 
-        $files = array_map(function($file) {
-            return [
-                'id' => $file->getId(),
-                'name' => $file->getOriginalFileName(),
-                'url' => $this->generateCatalogueItemFileURL($file->getStorageFileName())
-            ];
-        }, $catalogueItem->getFiles() ?? []);
+        $files = array_map([$this, 'generateJSONFromFile'], $catalogueItem->getFiles() ?? []);
 
-        $links = array_map(function($link) {
-            return [
-                'id' => $link->getId(),
-                'name' => $link->getName(),
-                'url' => $link->getUrl()
-            ];
-        }, $catalogueItem->getLinks() ?? []);
+
+        $links = array_map([$this, 'generateJSONFromLink'], $catalogueItem->getLinks() ?? []);
 
         return array(
             "id" => $catalogueItem->getId(),
@@ -227,7 +222,7 @@ class CatalogueController extends BaseController
             "monthMaxAge" => $catalogueItem->getMonthMaxAge(),
             "imageURL" => $imageURL,
             "authors" => $catalogueItem->getAuthors(),
-            "time" => $catalogueItem->getTime(),
+            "time" => $catalogueItem->getLength(),
             "description" => $catalogueItem->getDescription(),
             "note" => $catalogueItem->getNote(),
 
@@ -242,6 +237,24 @@ class CatalogueController extends BaseController
         );
     }
 
+    public function generateJSONFromFile(File $file): array
+    {
+        return [
+            'id' => $file->getId(),
+            'name' => $file->getDescription(),
+            'uri' => $this->generateCatalogueItemFileURL($file->getStorageFileName())
+        ];
+    }
+
+    public function generateJSONFromLink(Link $link): array
+    {
+        return [
+            'id' => $link->getId(),
+            'name' => $link->getName(),
+            'url' => $link->getUrl()
+        ];
+    }
+
     public function addFile($data): void
     {
         try {
@@ -249,9 +262,10 @@ class CatalogueController extends BaseController
             $name = parent::extractString($data, 'name');
             $file = $this->extractFile('file');
 
-            $this->catalogueService->addFile($catalogueItemId, $file, $name);
+            $catalogueItem = $this->catalogueService->addFile($catalogueItemId, $file, $name);
 
-            parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA));
+            parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA),
+                $this->generateJSONFromFile($catalogueItem->getNewFiles()[0]));
 
         } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
@@ -269,11 +283,12 @@ class CatalogueController extends BaseController
         try {
             $catalogueItemId = parent::extractString($data, 'catalogueItemId');
             $name = parent::extractString($data, 'name');
-            $link = $this->extractFile('link');
+            $link = $this->extractString($data, 'link');
 
-            $this->catalogueService->addLink($catalogueItemId, $link, $name);
+            $catalogueItem = $this->catalogueService->addLink($catalogueItemId, $link, $name);
 
-            parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA));
+            parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA),
+                $this->generateJSONFromLink($catalogueItem->getNewLinks()[0]));
 
         } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());

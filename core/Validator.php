@@ -10,6 +10,7 @@ enum Model: string
     case Member = "Member";
     case EducationItem = "EducationItem";
     case OutreachItem = "OutreachItem";
+    case CatalogueItem = "CatalogueItem";
 }
 
 enum Action
@@ -21,9 +22,19 @@ enum Action
     case EDIT;
     case DELETE;
 
+    // Específico de UserController
     case LOGIN;
 
+    // Específico de ContactController
     case SEND;
+
+    // Específico de CatalogueItemController
+//    case ADDFILE;
+//    case DELETEFILE;
+//    case ADDLINK;
+//    case DELETELINK;
+//    case LISTAVAILABLEFILTERS;
+
 }
 
 class Validator {

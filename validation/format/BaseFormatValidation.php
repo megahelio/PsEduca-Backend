@@ -62,7 +62,7 @@ class BaseFormatValidation
 
     // Obtener errores
     public function getErrors(): array {
-        return $this->errors;
+        return array_unique($this->errors);
     }
 
     // Añadir error a los existentes
