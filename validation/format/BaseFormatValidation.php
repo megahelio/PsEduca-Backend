@@ -72,14 +72,14 @@ class BaseFormatValidation
     }
 
     // Validar id
-    protected function validateId(?string $id): void
+    protected function validateId(?string $id, string $errorPersonalization = ""): void
     {
         if (strlen($id ?? "") < 1) {
-            $this->addError('ID_MINIMO_F_KO');
+            $this->addError('ID_' . $errorPersonalization . 'MINIMO_F_KO');
         } elseif (!is_numeric($id)) {
-            $this->addError('ID_INVALIDO_F_KO');
+            $this->addError('ID_' . $errorPersonalization . 'INVALIDO_F_KO');
         } elseif (intval($id) < 1) {
-            $this->addError('ID_INVALIDO_F_KO');
+            $this->addError('ID_' . $errorPersonalization . 'INVALIDO_F_KO');
         }
     }
 

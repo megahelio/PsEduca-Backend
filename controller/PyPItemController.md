@@ -1,4 +1,4 @@
-# PYPController - Apartado Pruebas 
+# PyPItemController - Apartado Pruebas y Programas
 
 API destinada a la gestión CRUD de items de pruebas y programas de la plataforma PsEduca.
 

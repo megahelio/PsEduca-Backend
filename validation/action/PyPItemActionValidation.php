@@ -48,14 +48,4 @@ class PyPItemActionValidation {
         }
         return $errors;
     }
-
-    // Todo: Pendiente de implementar el apartado de permisos de PyP
-    private function validateHasPermission(int $pypItemId, int $userId): array {
-        $errors = [];
-        if (!$this->pypItemMapper->hasPermission($pypItemId, $userId)) {
-//            $errors[] = 'FORBIDDEN_ACCESS_KO';
-            BaseController::generateHttpResponse(403, array(ResponseCodes::FORBIDDEN_ACCESS_KO));
-        }
-        return $errors;
-    }
 }

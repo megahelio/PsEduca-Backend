@@ -12,6 +12,7 @@ enum Model: string
     case OutreachItem = "OutreachItem";
     case CatalogueItem = "CatalogueItem";
     case PyPItem = "PyPItem";
+    case PyPAuthorization = "PyPAuthorization";
 }
 
 enum Action
@@ -42,7 +43,7 @@ class Validator {
     /**
      * @throws ReflectionException|ValidationException
      */
-    public static function validate($object, Action $action): void
+    public static function validate($object, Action $action): ?User
     {
         $errors = [];
 
@@ -51,7 +52,7 @@ class Validator {
 
         // Antes de nada, se comprueba si se tienen los permisos necesarios (auth)
         $permissionValidation = new PermissionValidation();
-        $errors = $permissionValidation->validate($model, $action);
+        list($errors, $currentUser) = $permissionValidation->validate($model, $action, $object);
 
         // Si hay errores de autenticación, no se valida el formato ni la acción
         if ($errors) {
@@ -85,6 +86,7 @@ class Validator {
                 throw new ValidationException($errors);
             }
         }
+        return $currentUser;
     }
 
     /**

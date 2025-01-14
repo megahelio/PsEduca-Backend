@@ -151,6 +151,6 @@ class UserService {
     public function list(): array
     {
         Validator::validate(new User(), Action::LIST);
-        return $this->userMapper->list();
+        return $this->userMapper->findAll();
     }
 }

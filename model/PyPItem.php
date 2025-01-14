@@ -42,6 +42,10 @@ class PyPItem
      * Indicates if the image has changed
      * @var bool
      */
+    /**
+     * Indicates if the image has changed
+     * @var bool
+     */
     private bool $isImageChanged;
 
     /**
