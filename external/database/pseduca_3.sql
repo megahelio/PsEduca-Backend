@@ -195,7 +195,7 @@ INSERT INTO formatos_items_catalogo (`nombre`) VALUES ('Online');
 INSERT INTO `aplicacion_items_catalogo` (`nombre`) VALUES ('Individual');
 INSERT INTO `aplicacion_items_catalogo` (`nombre`) VALUES ('Colectiva');
 
--- Apartado Pruebas y programas
+-- Apartado Pruebas y programas (PyP)
 
 CREATE TABLE `items_pyp` (
                              `id` int(11) NOT NULL,
@@ -205,10 +205,24 @@ CREATE TABLE `items_pyp` (
                              `link_externo` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
 ALTER TABLE `items_pyp`
     ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `items_pyp`
     MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+CREATE TABLE `autorizaciones_usuarios_items_pyp` (
+                                                     `id_usuario` int(11) NOT NULL,
+                                                     `id_item_pyp` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `autorizaciones_usuarios_items_pyp`
+    ADD PRIMARY KEY (`id_usuario`,`id_item_pyp`),
+    ADD KEY `id_item_pyp` (`id_item_pyp`);
+
+ALTER TABLE `autorizaciones_usuarios_items_pyp`
+    ADD CONSTRAINT `autorizaciones_usuarios_items_pyp_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `autorizaciones_usuarios_items_pyp_ibfk_2` FOREIGN KEY (`id_item_pyp`) REFERENCES `items_pyp` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;

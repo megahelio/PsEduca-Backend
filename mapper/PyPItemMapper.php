@@ -102,9 +102,23 @@ class PyPItemMapper {
         return null;
     }
 
-    public function findAll(): array
+    public function findAll(bool $returnOnlyAuthorized, ?string $userId = null): array
     {
-        $stmt = $this->db->query("SELECT * FROM items_pyp");
+        if (!$returnOnlyAuthorized) {
+            // Los admins pueden ver todos los items
+            $stmt = $this->db->query("SELECT * FROM items_pyp");
+        } else {
+            // Los usuarios normales solo pueden ver los items para los que tienen autorización
+            $stmt = $this->db->prepare("
+                SELECT * 
+                FROM items_pyp JOIN autorizaciones_usuarios_items_pyp ON items_pyp.id = autorizaciones_usuarios_items_pyp.id_item_pyp
+                WHERE autorizaciones_usuarios_items_pyp.id_usuario = :userId
+            ");
+            $stmt->execute(array(
+                ':userId' => $userId
+            ));
+        }
+
         $pypItems = [];
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $pypItems[] = $this->pypItemFromRow($data);

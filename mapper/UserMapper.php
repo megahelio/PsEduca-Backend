@@ -67,7 +67,7 @@ class UserMapper {
         return null;
     }
 
-    public function list(): array
+    public function findAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM usuarios");
         $usersDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
