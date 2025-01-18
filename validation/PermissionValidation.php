@@ -1,5 +1,7 @@
 <?php
 
+require_once './../PsEduca-Backend/mapper/PyPAuthorizationMapper.php';
+
 class PermissionValidation
 {
     private static array $permissions = [
@@ -35,29 +37,50 @@ class PermissionValidation
             Action::EDIT->name => UserRole::ADMIN_GLOBAL,
             Action::DELETE->name => UserRole::ADMIN_GLOBAL,
         ],
+        Model::CatalogueItem->name => [
+            Action::GET->name => true,
+            Action::LIST->name => true,
+            Action::ADD->name => UserRole::GESTOR_CATALOGO,
+            Action::EDIT->name => UserRole::GESTOR_CATALOGO,
+            Action::DELETE->name => UserRole::GESTOR_CATALOGO,
+        ],
+        Model::PyPItem->name => [
+            Action::GET->name => UserRole::USUARIO_PYP,
+            Action::LIST->name => UserRole::USUARIO_PYP,
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::EDIT->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+        ],
+        Model::PyPAuthorization->name => [
+            Action::ADD->name => UserRole::ADMIN_GLOBAL,
+            Action::DELETE->name => UserRole::ADMIN_GLOBAL,
+            Action::LIST->name => UserRole::ADMIN_GLOBAL,
+        ],
     ];
 
     private static array $roleHierarchy = [
         UserRole::ADMIN_GLOBAL->name => [UserRole::ADMIN_GLOBAL], // Admin global puede hacer cualquier cosa
         UserRole::GESTOR_CATALOGO->name => [UserRole::GESTOR_CATALOGO, UserRole::ADMIN_GLOBAL], // Gestor y admin global
-        UserRole::USUARIO_PYP->name => [UserRole::USUARIO_PYP, UserRole::ADMIN_GLOBAL], // Usuario y admin global
+        UserRole::USUARIO_PYP->name => [UserRole::USUARIO_PYP, UserRole::GESTOR_CATALOGO, UserRole::ADMIN_GLOBAL], // Cualquier usuario autenticado
     ];
 
     private array $errors;
 
     private UserMapper $userMapper;
+    private PyPAuthorizationMapper $pypAuthorizationMapper;
 
     public function __construct()
     {
         $this->errors = [];
         $this->userMapper = UserMapper::getInstance();
+        $this->pypAuthorizationMapper = PyPAuthorizationMapper::getInstance();
     }
 
     /**
      * @throws ValidationException
      * @throws Exception
      */
-    public function validate(Model $model, Action $action): array
+    public function validate(Model $model, Action $action, Object $object = null): array
     {
 
         if (!array_key_exists($model->name, self::$permissions)) {
@@ -71,16 +94,27 @@ class PermissionValidation
         $permissionMatrixValue = self::$permissions[$model->name][$action->name];
 
         if ($permissionMatrixValue !== true) {
-            $authUserRole = $this->authenticateUser()->getRole();
+            $user = $this->authenticateUser();
+
+            $authUserRole = $user->getRole();
 
             // Verifica si el rol del usuario está en la jerarquía permitida
             if (!in_array($authUserRole, self::$roleHierarchy[$permissionMatrixValue->name] ?? [])) {
 //                $this->errors[] = ResponseCodes::FORBIDDEN_ACCESS_KO;
                 BaseController::generateHttpResponse(403, array(ResponseCodes::FORBIDDEN_ACCESS_KO));
             }
+
+            // Específico de PyPItem
+            if (!is_null($object)
+                && $model->name === Model::PyPItem->name // Si viene del controlador PyPItem
+                && $action->name === Action::GET->name // Si la acción es GET
+                && $user->getRole() !== UserRole::ADMIN_GLOBAL // Si el usuario no es admin global
+                && !$this->pypAuthorizationMapper->hasAuthorization($object->getId(), $user->getId())) { // Si el usuario no tiene autorización
+                BaseController::generateHttpResponse(403, array(ResponseCodes::FORBIDDEN_ACCESS_KO));
+            }
         }
 
-        return $this->errors;
+        return array ($this->errors, $user??null);
     }
 
     /**

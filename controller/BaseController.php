@@ -4,6 +4,7 @@ use JetBrains\PhpStorm\NoReturn;
 
 require_once(__DIR__."/../model/User.php");
 require_once(__DIR__ . "/../service/UserService.php");
+require_once(__DIR__ . "/../model/File.php");
 
 /**
 * Class BaseController
@@ -12,6 +13,20 @@ require_once(__DIR__ . "/../service/UserService.php");
 */
 class BaseController {
 
+
+    /**
+     * @param array $data
+     * @param string $key
+     * @return array|null
+     */
+    protected static function extractStringList(array $data, string $key): ?array
+    {
+        if (!isset($data[$key])) {
+            return null;
+        }
+        // Convertir la cadena en un array
+        return explode(';', $data[$key]);
+    }
     /**
      * @param array $data
      * @param string $key
@@ -23,6 +38,7 @@ class BaseController {
     }
 
     /**
+     * @param string $form_data_name
      * @return File|null
      */
     protected function extractFile(string $form_data_name): ?File
@@ -37,6 +53,35 @@ class BaseController {
             return null;
         }
     }
+
+
+    /**
+     * @param string $form_data_name
+     * @return File[]|null
+     */
+    protected function extractFileArray(string $form_data_name): ?array
+    {
+        if (isset($_FILES[$form_data_name]) && is_array($_FILES[$form_data_name]['error'])) {
+            $files = [];
+
+            foreach ($_FILES[$form_data_name]['error'] as $key => $error) {
+                if ($error === UPLOAD_ERR_OK) {
+                    $fileTmpPath = $_FILES[$form_data_name]['tmp_name'][$key]; // Ruta temporal del archivo
+                    $fileName = $_FILES[$form_data_name]['name'][$key];       // Nombre original del archivo
+                    $fileSize = $_FILES[$form_data_name]['size'][$key];       // Tamaño del archivo
+                    $fileType = $_FILES[$form_data_name]['type'][$key];       // Tipo MIME del archivo
+
+                    // Crear un objeto File y añadirlo a la lista
+                    $files[] = new File($fileTmpPath, $fileName, null, $fileSize, $fileType);
+                }
+            }
+
+            return $files;
+        }
+
+        return null;
+    }
+
 
 
     /**

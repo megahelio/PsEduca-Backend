@@ -38,6 +38,19 @@ class File
      */
     private ?string $storageFileName;
 
+    /**
+     * The brief description of the file.
+     * Note: It is only used in the context of catalogue items.
+     * @var string|null
+     */
+    private ?string $description;
+
+    /**
+     * The id of the file
+     * Note: It is only used in the context of catalogue items.
+     * @var string|null
+     */
+    private ?string $id;
 
     /**
      * The constructor
@@ -45,19 +58,27 @@ class File
      * @param string|null $originalFileName The name of the file
      * @param int|null $fileSize The size of the file in bytes
      * @param string|null $mimeType The MIME type of the file
+     * @param string|null $fileTempPath The path of the file
+     * @param string|null $storageFileName The new name of the file
+     * @param string|null $description The brief description of the file
+     * @param string|null $id The id of the file
      */
     public function __construct(
         ?string $fileTempPath = null,
         ?string $originalFileName = null,
         ?string $storageFileName = null,
         ?int    $fileSize = null,
-        ?string $mimeType = null
+        ?string $mimeType = null,
+        ?string $description = null,
+        ?string $id = null
     ) {
         $this->fileTmpPath = $fileTempPath;
         $this->originalFileName = $originalFileName;
         $this->storageFileName = $storageFileName;
         $this->fileSize = $fileSize;
-        $this->mimeType = strtolower($mimeType) ?? null;
+        $this->mimeType = $mimeType !== null ? strtolower($mimeType) : null;
+        $this->description = $description;
+        $this->id = $id;
     }
 
     /**
@@ -67,7 +88,7 @@ class File
      * @return File The File instance.
      * @throws FileException If the file does not exist or cannot be read.
      */
-    public static function fromExistingFile(string $fileName): File
+        public static function fromExistingFile(string $fileName, string $id = null, string $description = null): File
     {
         $filePath = UPLOAD_FOLDER . $fileName;
         // Verificar si el archivo existe
@@ -86,7 +107,9 @@ class File
             null, // No conservamos el nombre original
             $storageFileName,
             $fileSize,
-            $mimeType
+            $mimeType,
+            $description,
+            $id
         );
     }
 
@@ -200,5 +223,47 @@ class File
     public function setMimeType(string $mimeType): void
     {
         $this->mimeType = $mimeType;
+    }
+
+    /**
+     * Gets the brief description of the file
+     *
+     * @return string|null The brief description of the file
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * Sets the brief description of the file
+     *
+     * @param string $description The brief description of the file
+     * @return void
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * Gets the id of the file
+     *
+     * @return string|null The id of the file
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets the id of the file
+     *
+     * @param string $id The id of the file
+     * @return void
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 }

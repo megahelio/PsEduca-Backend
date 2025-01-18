@@ -65,5 +65,5 @@ GRANT ALL PRIVILEGES ON `pseduca`.* TO 'pseduca'@'%';
 
 
 -- Creamos un usuario de prueba para poder acceder (usuario: root, contraseña: root):
-INSERT INTO pseduca.usuarios (nombre_usuario, nombre_completo, contrasenha, rol, ultima_modificacion_contrasenha)
-VALUES ('root', 'root', '$2y$10$3dwzAqQpFH9ccBgbo63ovemm0L2GXesMveo4lm4l6Q6ZD59ZURRG.', 'ADMIN_GLOBAL', '2024-11-29 01:02:07');
+INSERT INTO pseduca.usuarios (nombre_usuario, nombre_completo, contrasenha, rol)
+VALUES ('root', 'root', '$2y$10$3dwzAqQpFH9ccBgbo63ovemm0L2GXesMveo4lm4l6Q6ZD59ZURRG.', 'ADMIN_GLOBAL');

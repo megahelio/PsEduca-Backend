@@ -1,5 +1,4 @@
 <?php
-// file: model/UserMapper.php
 
 require_once(__DIR__."/../core/PDOConnection.php");
 
@@ -68,7 +67,7 @@ class UserMapper {
         return null;
     }
 
-    public function list(): array
+    public function findAll(): array
     {
         $stmt = $this->db->query("SELECT * FROM usuarios");
         $usersDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
