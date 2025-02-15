@@ -32,7 +32,9 @@ class UserFormatValidation extends BaseFormatValidation {
 
                 $this->validateUserName($user->getUserName());
                 $this->validateFullName($user->getFullName());
-                $this->validatePassword($user->getPassword(), true);
+                if ($user->isChangingPassword()){
+                    $this->validatePassword($user->getPassword(), false);
+                }
                 $this->validateRole($user);
                 break;
 

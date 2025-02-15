@@ -21,23 +21,26 @@ class EducationActionTest
     public function runTests(): void
     {
         $validations = $this->defineActionFieldValidations();
-        $baseUrl = SERVER_URL;
+        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         $headers = ["Authorization: Bearer $this->validToken"];
 
         echo "<h3>Ejecutando pruebas para controlador EDUCATION</h3>\n";
 
         foreach ($validations as $validation => $fields) {
-            $url = match ($fields['action']) {
-                'ADD' => "$baseUrl/?controller=education&action=add",
-                'EDIT' => "$baseUrl/?controller=education&action=edit",
-                'DELETE' => "$baseUrl/?controller=education&action=delete",
-                'GET' => "$baseUrl/?controller=education&action=get",
-                'LIST' => "$baseUrl/?controller=education&action=list",
+            $fields['payload'] = $fields['payload'] ?? [];
+            $fields['payload']['controller'] = 'education';
+            $fields['payload']['action'] = match ($fields['action']) {
+                'ADD' => 'add',
+                'EDIT' => 'edit',
+                'DELETE' => 'delete',
+                'GET' => 'get',
+                'LIST' => 'list',
                 default => throw new Exception("Unknown action: $validation"),
             };
 
-//            echo "<h4>Ejecutando pruebas para $validation - $fieldName</h4>\n";
-            BaseActionTest::runFieldValidationTest($fields['expectedOk'] , $fields['expectedHTTPCode'], $fields['expectedCodes'], $fields['action'], $url, $headers, $fields['payload']);
+    //        echo "<h4>Ejecutando pruebas para $validation - $fieldName</h4>\n";
+            BaseActionTest::runFieldValidationTest($fields['expectedOk'] , $fields['expectedHTTPCode'],
+                $fields['expectedCodes'], $fields['action'], $serverURL, $headers, $fields['payload']);
         }
     }
 
