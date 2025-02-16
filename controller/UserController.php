@@ -14,10 +14,10 @@ class UserController extends BaseController {
 
     private UserService $userService;
 
-	public function __construct() {
+    public function __construct() {
 
-		$this->userService = new UserService();
-	}
+        $this->userService = new UserService();
+    }
 
     public function get($data): void
     {
@@ -72,7 +72,7 @@ class UserController extends BaseController {
 
     }
 
-	public function add($data): void
+    public function add($data): void
     {
         try {
 
@@ -81,23 +81,23 @@ class UserController extends BaseController {
             $password = parent::extractString($data, 'password');
             $strRole = parent::extractString($data, 'role');
 
-			$newUser = $this->userService->add($userName, $fullName, $password, $strRole);
+            $newUser = $this->userService->add($userName, $fullName, $password, $strRole);
 
-			parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA), array(
+            parent::generateHttpResponse(201, array(ResponseCodes::RECORDSET_DATA), array(
                 "id" => $newUser->getId(),
                 "role" => $newUser->getRole()->name,
                 "name" => $newUser->getUserName(),
                 "fullName" => $newUser->getFullName(),
             ));
 
-		} catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
-	}
+    }
 
     public function edit($data): void
     {
@@ -129,9 +129,9 @@ class UserController extends BaseController {
         }
     }
 
-	public function delete($data): void
+    public function delete($data): void
     {
-		try {
+        try {
 
             $id = parent::extractString($data, 'id');
 
@@ -150,7 +150,7 @@ class UserController extends BaseController {
         } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
-	}
+    }
 
 
     /*
@@ -159,56 +159,56 @@ class UserController extends BaseController {
      */
 
 //    public function resetPassword($data){
-//		// Comprueba si el usuario existe
-//		try {
-//			// Verifica si la contraseña es correcta
-//			if ($this->userMapper->userEmailExists($data->user_email)) {
+//        // Comprueba si el usuario existe
+//        try {
+//            // Verifica si la contraseña es correcta
+//            if ($this->userMapper->userEmailExists($data->user_email)) {
 //
-//				$arraySecurityElems = $this->userMapper->getSecurityElementsFromEmail($data->user_email);
-//				$securityCode = $arraySecurityElems[0];
+//                $arraySecurityElems = $this->userMapper->getSecurityElementsFromEmail($data->user_email);
+//                $securityCode = $arraySecurityElems[0];
 //
-//				$securityCodeDate = $arraySecurityElems[1]->modify("+ 10 minutes");
+//                $securityCodeDate = $arraySecurityElems[1]->modify("+ 10 minutes");
 //
-//				$currentTime = new DateTime();
+//                $currentTime = new DateTime();
 //
-//				if ($securityCode == $data->security_code){
-//					if ($securityCodeDate < $currentTime){
-//						$this->error403("El código ha caducado.");
-//					}else{
-//						$user = $this->userMapper->getUserFromEmail($data->user_email);
-//						$this->userMapper->updateUser($user->getUsername(), $data->user_password, $user->getEmail());
-//						parent::answerString200("Se ha cambiado correctamente la contraseña. Ahora puedes iniciar sesión.");
-//					}
-//				}else{
-//					parent::error403("Código no registrado");
-//				}
-//			} else {
-//				// Si el email no existe, devuelve una respuesta HTTP 401
-//				parent::error404("Email no existente.");
-//			}
-//		} catch (Exception $e) {
-//			// Si la base de datos falla o hay un error imprevisto
-//			parent::error500();
-//		}
-//	}
+//                if ($securityCode == $data->security_code){
+//                    if ($securityCodeDate < $currentTime){
+//                        $this->error403("El código ha caducado.");
+//                    }else{
+//                        $user = $this->userMapper->getUserFromEmail($data->user_email);
+//                        $this->userMapper->updateUser($user->getUsername(), $data->user_password, $user->getEmail());
+//                        parent::answerString200("Se ha cambiado correctamente la contraseña. Ahora puedes iniciar sesión.");
+//                    }
+//                }else{
+//                    parent::error403("Código no registrado");
+//                }
+//            } else {
+//                // Si el email no existe, devuelve una respuesta HTTP 401
+//                parent::error404("Email no existente.");
+//            }
+//        } catch (Exception $e) {
+//            // Si la base de datos falla o hay un error imprevisto
+//            parent::error500();
+//        }
+//    }
 //
-//	public function generateSecurityCode($data) {
+//    public function generateSecurityCode($data) {
 //
-//		try {
-//			// Comprueba si el nombre de usuario o el correo electrónico ya existen
-//			if (is_null($data->user_email) || !$this->userMapper->userEmailExists($data->user_email)) {
-//				// Si no existe, devuelve una respuesta HTTP 404
-//				parent::error404("El correo electrónico no existe.");
-//			}
-//			$user = $this->userMapper->getUserFromEmail($data->user_email);
-//			$this->userMapper->generateAndSendSecurityCode($user);
+//        try {
+//            // Comprueba si el nombre de usuario o el correo electrónico ya existen
+//            if (is_null($data->user_email) || !$this->userMapper->userEmailExists($data->user_email)) {
+//                // Si no existe, devuelve una respuesta HTTP 404
+//                parent::error404("El correo electrónico no existe.");
+//            }
+//            $user = $this->userMapper->getUserFromEmail($data->user_email);
+//            $this->userMapper->generateAndSendSecurityCode($user);
 //
-//			parent::answerString200("Te hemos enviado un correo. Introduce el código que te hemos enviado.");
+//            parent::answerString200("Te hemos enviado un correo. Introduce el código que te hemos enviado.");
 //
-//		} catch (Exception $e) {
-//			// Si la base de datos falla o hay un error imprevisto
-//			parent::error500($e->getMessage());
-//		}
-//	}
+//        } catch (Exception $e) {
+//            // Si la base de datos falla o hay un error imprevisto
+//            parent::error500($e->getMessage());
+//        }
+//    }
 
 }

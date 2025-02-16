@@ -19,15 +19,15 @@ class UserMapper {
         return self::$instance;
     }
 
-	/**
-	* Reference to the PDO connection
-	* @var PDO
-	*/
-	private PDO $db;
+    /**
+    * Reference to the PDO connection
+    * @var PDO
+    */
+    private PDO $db;
 
-	public function __construct() {
-		$this->db = PDOConnection::getInstance();
-	}
+    public function __construct() {
+        $this->db = PDOConnection::getInstance();
+    }
 
     /**
      * Gets the user info from the database
@@ -84,10 +84,10 @@ class UserMapper {
      * @param User $user The user to be saved
      * @return User
      */
-	public function save(User $user) : User {
-		$stmt = $this->db->prepare("INSERT INTO usuarios (nombre_usuario, nombre_completo, contrasenha, rol)
+    public function save(User $user) : User {
+        $stmt = $this->db->prepare("INSERT INTO usuarios (nombre_usuario, nombre_completo, contrasenha, rol)
             values (:nombre_usuario, :nombre_completo, :contrasenha, :rol)");
-		$stmt->execute(array(
+        $stmt->execute(array(
             ':nombre_usuario' => $user->getUserName(),
             ':nombre_completo' => $user->getFullName(),
             ':contrasenha' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
@@ -95,7 +95,7 @@ class UserMapper {
         ));
         $user->setId($this->db->lastInsertId());
         return $user;
-	}
+    }
 
     public function edit(User $user): void {
 
@@ -137,22 +137,22 @@ class UserMapper {
         return $stmt->rowCount() == 1;
     }
 
-	/**
-	* Checks if a given username is already in the database
-	*
-	* @param string $userName the username to check
-	* @return boolean true if the username exists, false otherwise
-	*/
-	public function userNameExists(string $userName): bool
+    /**
+    * Checks if a given username is already in the database
+    *
+    * @param string $userName the username to check
+    * @return boolean true if the username exists, false otherwise
+    */
+    public function userNameExists(string $userName): bool
     {
-		$stmt = $this->db->prepare("SELECT count(*) FROM usuarios where nombre_usuario=?");
-		$stmt->execute(array($userName));
+        $stmt = $this->db->prepare("SELECT count(*) FROM usuarios where nombre_usuario=?");
+        $stmt->execute(array($userName));
 
-		if ($stmt->fetchColumn() > 0) {
-			return true;
-		}
-		return false;
-	}
+        if ($stmt->fetchColumn() > 0) {
+            return true;
+        }
+        return false;
+    }
 
     public function userNameExistsExceptSelf(string $userName, ?string $userId = null): bool
     {

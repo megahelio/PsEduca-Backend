@@ -1,6 +1,6 @@
 <?php
 
-require_once './../PsEduca-Backend/mapper/PyPAuthorizationMapper.php';
+require_once __DIR__ . '/../mapper/PyPAuthorizationMapper.php';
 
 class PermissionValidation
 {
@@ -160,5 +160,5 @@ class PermissionValidation
         } catch (ValidationException $exc) {
             BaseController::generateHttpResponse(401, $exc->getErrors());
         }
-	}
+    }
 }
