@@ -10,6 +10,15 @@ class PyPItemMapper {
         }
         return self::$instance;
     }
+    public function enableTesting(): void
+    {
+        $this->db = PDOConnectionTesting::getInstance();
+    }
+
+    public function disableTesting(): void
+    {
+        $this->db = PDOConnection::getInstance();
+    }
 
     /**
      * Reference to the PDO connection

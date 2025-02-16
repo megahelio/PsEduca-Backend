@@ -24,11 +24,7 @@ class ValidationTests
     public function __construct($user, $password)
     {
         $this->token = $this->generateToken($user, $password, true);
-        $this->adminTestUser = $this->insertTestUser("ADMIN_GLOBAL");
-        $this->gestCatTestUser = $this->insertTestUser("GESTOR_CATALOGO");
-        $this->usuarioPYPTestUser = $this->insertTestUser("USUARIO_PYP");
-
-        $this->dataManagement = new TestDataManagement($this->token);
+      
     }
 
     /**
@@ -40,6 +36,11 @@ class ValidationTests
         $this->removeTestUser($this->gestCatTestUser);
         $this->removeTestUser($this->usuarioPYPTestUser);
     }
+    public function cleanUserTables(){
+        $this->removeTestUser($this->adminTestUser);
+        $this->removeTestUser($this->gestCatTestUser);
+        $this->removeTestUser($this->usuarioPYPTestUser);
+    }
 
     /**
      * @throws Exception
@@ -47,10 +48,11 @@ class ValidationTests
     private function generateToken(string $user, string $password, bool $checkAdmin): string
     {
         // Login
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=auth&action=login";
+        $url = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
 
         $payload = [
+            'controller' => 'auth',
+            'action' => 'login',
             'userName' => $user,
             'password' => $password
         ];
@@ -74,12 +76,13 @@ class ValidationTests
      */
     private function insertTestUser(string $role): TestUser
     {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=user&action=add";
+        $url = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         $headers = ["Authorization: Bearer $this->token"];
         $userName = "TEST_USER" . rand(0, 1000);
         $password = "TEST_PASS" . rand(0, 1000);
         $payload = [
+            'controller' => 'user',
+            'action' => 'add',
             'userName' => $userName,
             'password' => $password,
             'fullName' => "TEST_FULL_NAME" . rand(0, 1000),
@@ -94,8 +97,11 @@ class ValidationTests
             throw new Exception("Error inserting test user: " . print_r($responseBody, true));
         }
 
-        echo "Usuario de prueba con rol " . $responseBody['resource']['role']
-            . " insertado con id " . $responseBody['resource']['id'] . ".\n ";
+        echo sprintf(
+            "<p> Usuario de prueba con rol %s insertado con ID %d.</p>",
+            $responseBody['resource']['role'],
+            $responseBody['resource']['id']
+        );
 
         return new TestUser(
                 id: $responseBody['resource']['id'],
@@ -129,6 +135,11 @@ class ValidationTests
 
     public function runTests(): void
     {
+        $this->adminTestUser = $this->insertTestUser("ADMIN_GLOBAL");
+        $this->gestCatTestUser = $this->insertTestUser("GESTOR_CATALOGO");
+        $this->usuarioPYPTestUser = $this->insertTestUser("USUARIO_PYP");
+        $this->dataManagement = new TestDataManagement($this->token);
+
         ?>
 
         <!DOCTYPE html>
@@ -163,16 +174,57 @@ class ValidationTests
     }
 
 }
+function enableTestingModeOnMappers(): void
+{
+    // Obtener todas las clases declaradas
+    $clases = get_declared_classes();
 
+    foreach ($clases as $clase) {
+        // Verificar si la clase es un Mapper (por ejemplo, que su nombre termine con 'Mapper')
+        if (strpos($clase, 'Mapper') !== false && method_exists($clase, 'enableTesting')) {
+            // Obtener la instancia del Mapper
+            $instancia = $clase::getInstance();
+
+            // Llamar a 'enableTesting' en la instancia del Mapper
+            $instancia->enableTesting();
+
+            echo "Testing habilitado para: $clase\n";
+        }
+    }
+}
+
+function disableTestingModeOnMappers(): void
+{
+    // Obtener todas las clases declaradas
+    $clases = get_declared_classes();
+
+    foreach ($clases as $clase) {
+        // Verificar si la clase es un Mapper (por ejemplo, que su nombre termine con 'Mapper')
+        if (strpos($clase, 'Mapper') !== false && method_exists($clase, 'disableTesting')) {
+            // Obtener la instancia del Mapper
+            $instancia = $clase::getInstance();
+
+            // Llamar a 'disableTesting' en la instancia del Mapper
+            $instancia->disableTesting();
+
+            echo "Testing deshabilitado para: $clase\n";
+        }
+    }
+}
 // Ejecución de las pruebas
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     try {
+        
         $tests = new ValidationTests('root', 'root');
+        enableTestingModeOnMappers();
         $tests->runTests();
+        $tests->cleanUserTables();
+        disableTestingModeOnMappers();
+        $tests->cleanUserTables();
         die();
     } catch (Exception $e) {
-
+        $tests->cleanUserTables();
         ?>
         <!DOCTYPE html>
         <html lang="es">

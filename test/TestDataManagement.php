@@ -114,11 +114,11 @@ class TestDataManagement
      */
     private function insertTestDataForController(TestController $controller, mixed $action, mixed $payloads): void
     {
-        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
+        $url = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         foreach ($payloads as $payload) {
-            $url = $serverURL . "?controller=$controller->value&action=$action";
             $headers = ["Authorization: Bearer " .$this->validToken];
-
+            $payload['controller'] = $controller->value;
+            $payload['action'] = $action;
             $response = makeRequest("POST", $url, $headers, $payload);
 
             if ($response['httpCode'] !== 201) {
