@@ -109,6 +109,7 @@ class PermissionValidation
                 && $model->name === Model::PyPItem->name // Si viene del controlador PyPItem
                 && $action->name === Action::GET->name // Si la acción es GET
                 && $user->getRole() !== UserRole::ADMIN_GLOBAL // Si el usuario no es admin global
+                && !is_null($object->getId()) // Si el objeto tiene un ID no nulo (si no, no se puede comprobar -> error de formato, no de permisos)
                 && !$this->pypAuthorizationMapper->hasAuthorization($object->getId(), $user->getId())) { // Si el usuario no tiene autorización
                 BaseController::generateHttpResponse(403, array(ResponseCodes::FORBIDDEN_ACCESS_KO));
             }

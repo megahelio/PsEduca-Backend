@@ -34,6 +34,12 @@ class User
     private ?string $password;
 
     /**
+     * Variable to check if user is changing password
+     * @var bool
+     */
+    private bool $changePassword;
+
+    /**
      * The role of the user
      * @var UserRole|string|null
      */
@@ -58,6 +64,8 @@ class User
         $this->password = $passwd;
         $this->role = $role;
         $this->fullName = $fullName;
+
+        $this->changePassword = false;
     }
 
     /**
@@ -120,6 +128,7 @@ class User
      */
     public function setPassword(?string $password): void
     {
+        $this->changePassword = true;
         $this->password = $password;
     }
 
@@ -161,4 +170,13 @@ class User
     {
         $this->fullName = empty($fullName) ? null : $fullName;
     }
+
+    /**
+     * @return bool
+     */
+    public function isChangingPassword(): bool
+    {
+        return $this->changePassword;
+    }
+
 }
