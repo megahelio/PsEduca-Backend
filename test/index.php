@@ -37,12 +37,6 @@ class ValidationTests
         $this->removeTestUser($this->gestCatTestUser);
         $this->removeTestUser($this->usuarioPYPTestUser);
     }
-    public function cleanUserTables()
-    {
-        $this->removeTestUser($this->adminTestUser);
-        $this->removeTestUser($this->gestCatTestUser);
-        $this->removeTestUser($this->usuarioPYPTestUser);
-    }
 
     /**
      * @throws Exception
@@ -184,11 +178,10 @@ class ValidationTests
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     try {
+
         $tests = new ValidationTests('root', 'root');
-        PDOConnection::setTest(true);
         $tests->runTests();
-        $tests->cleanUserTables();
-        PDOConnection::setTest(false);
+
     } catch (Exception $e) {
         ?>
             <!DOCTYPE html>
@@ -217,12 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             </html>
     <?php
-
-    }finally {
-        $tests->cleanUserTables();
-        PDOConnection::setTest(false);
-        die();
     }
+
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_POST['user'] ?? null;
     $password = $_POST['password'] ?? null;

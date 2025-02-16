@@ -1,14 +1,14 @@
 <?php
 
-const SERVER_URL = "http://localhost/back/";
+const SERVER_URL = "http://localhost/PsEduca-Backend/";
 const JWT_KEY = "jwt_key";
 
 // Database production settings
 const DB_HOST = "localhost";
 const DB_PORT = 3306;
-const DB_NAME = "pseduca_DB";
-const DB_USER = "pseduca_user";
-const DB_PASS = "pseduca_pass";
+const DB_NAME = "pseduca";
+const DB_USER = "pseduca";
+const DB_PASS = "pseduca";
 
 // Database test settings
 const DB_TEST_HOST = "localhost";

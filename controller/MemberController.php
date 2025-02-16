@@ -42,8 +42,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(400, $e->getErrors());
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -80,8 +79,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -101,8 +99,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -132,8 +129,7 @@ class MemberController extends BaseController
             parent::generateHttpResponse(404, array(ResponseCodes::RECORDSET_EMPTY));
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }
@@ -167,8 +163,7 @@ class MemberController extends BaseController
 
         } catch (PDOException) {
             parent::generateHttpResponse(503, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
-        } catch (Throwable $e) {
-            echo $e;
+        } catch (Throwable) {
             parent::generateHttpResponse(500, array(ResponseCodes::INTERNAL_SERVER_ERROR_KO));
         }
     }

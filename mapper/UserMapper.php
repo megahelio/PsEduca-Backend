@@ -55,7 +55,6 @@ class UserMapper {
      */
     public function getUserInfo (int $userId, bool $bringPassword = false) : ?User
     {
-        error_log(PDOConnection::$test == true ? "TEST": "PROD");
         $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE id= :id");
         $stmt->execute(array(
             ':id' => $userId

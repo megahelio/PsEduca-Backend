@@ -12,7 +12,6 @@ class PDOConnection
     {
         if (self::$test) {
             if (self::$db_singleton_test == null) {
-                error_log ("Using test database");
                 self::$db_singleton_test = new PDO(
                     "mysql:host=" . DB_TEST_HOST . ";port=" . DB_TEST_PORT . ";dbname=" . DB_TEST_NAME . ";charset=utf8", // connection string
                     DB_TEST_USER,
@@ -26,7 +25,6 @@ class PDOConnection
             return self::$db_singleton_test;
         } else {
             if (self::$db_singleton_prod == null) {
-                error_log("Using prod database");
                 self::$db_singleton_prod = new PDO(
                     "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8", // connection string
                     DB_USER,

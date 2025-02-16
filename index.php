@@ -40,6 +40,14 @@ function run(): void
         die("Missing controller or action in request body");
     }
 
+    /*
+    Redirigir a la base de datos de prueba si se especifica.
+    Se utiliza el parámetro "test" en el cuerpo de la solicitud (form-data).
+    */
+    if (isset($body["test"]) && $body["test"] === "true") {
+        PDOConnection::setTest(true);
+    }
+
     $controllerName = $body["controller"];
     $controllerClassName = getControllerClassName($controllerName);
 
@@ -64,10 +72,6 @@ function run(): void
     }
 
     // Llamar al método correspondiente del controlador
-    if ($body["test"] === "true") { //si test
-        PDOConnection::setTest(true);
-    }
-
     $restController->$actionName($body);
 }
 
@@ -83,4 +87,12 @@ function getControllerClassName(string $controllerName): string
     return ucfirst($controllerName) . "Controller";
 }
 
-run();
+try{
+    run();
+} catch (PDOException $e) {
+    http_response_code(503);
+    die("Database error: " . $e);
+} catch (Exception $e) {
+    http_response_code(500);
+    die("Internal server error: " . $e);
+}
