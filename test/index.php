@@ -9,6 +9,8 @@ require_once __DIR__ . "/permission/PermissionTest.php";
 require_once __DIR__ . "/format/BaseFormatTest.php";
 require_once __DIR__ . "/action/BaseActionTest.php";
 
+require_once __DIR__ . "/../core/PDOConnection.php";
+
 class ValidationTests
 {
     private TestUser $adminTestUser;
@@ -24,7 +26,6 @@ class ValidationTests
     public function __construct($user, $password)
     {
         $this->token = $this->generateToken($user, $password, true);
-      
     }
 
     /**
@@ -36,7 +37,8 @@ class ValidationTests
         $this->removeTestUser($this->gestCatTestUser);
         $this->removeTestUser($this->usuarioPYPTestUser);
     }
-    public function cleanUserTables(){
+    public function cleanUserTables()
+    {
         $this->removeTestUser($this->adminTestUser);
         $this->removeTestUser($this->gestCatTestUser);
         $this->removeTestUser($this->usuarioPYPTestUser);
@@ -68,7 +70,6 @@ class ValidationTests
         }
 
         return $response['body']['resource']['jwtToken'];
-
     }
 
     /**
@@ -78,8 +79,8 @@ class ValidationTests
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         $headers = ["Authorization: Bearer $this->token"];
-        $userName = "TEST_USER" . rand(0, 1000);
-        $password = "TEST_PASS" . rand(0, 1000);
+        $userName = "TEST_USER" . rand(0, 10000);
+        $password = "TEST_PASS" . rand(0, 10000);
         $payload = [
             'controller' => 'user',
             'action' => 'add',
@@ -104,9 +105,9 @@ class ValidationTests
         );
 
         return new TestUser(
-                id: $responseBody['resource']['id'],
-                role: $responseBody['resource']['role'],
-                jwtToken: $this->generateToken($userName, $password, false),
+            id: $responseBody['resource']['id'],
+            role: $responseBody['resource']['role'],
+            jwtToken: $this->generateToken($userName, $password, false),
         );
     }
 
@@ -116,7 +117,7 @@ class ValidationTests
     private function removeTestUser(TestUser $testUser): void
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $headers = ["Authorization: Bearer " .$this->token];
+        $headers = ["Authorization: Bearer " . $this->token];
         $payload = [
             'controller' => 'user',
             'action' => 'delete',
@@ -131,7 +132,7 @@ class ValidationTests
             throw new Exception("Error deleting test user: " . $testUser->getId());
         }
 
-        echo "Usuario de prueba con id ". $testUser->getId() . " eliminado correctamente\n. ";
+        echo "Usuario de prueba con id " . $testUser->getId() . " eliminado correctamente\n. ";
     }
 
     public function runTests(): void
@@ -141,29 +142,31 @@ class ValidationTests
         $this->usuarioPYPTestUser = $this->insertTestUser("USUARIO_PYP");
         $this->dataManagement = new TestDataManagement($this->token);
 
-        ?>
+?>
 
         <!DOCTYPE html>
         <html lang="es">
+
         <head>
             <meta charset="UTF-8">
             <title>Pruebas de validación - PsEduca Backend</title>
         </head>
+
         <body>
-        <h1>Resultados de las pruebas</h1>
+            <h1>Resultados de las pruebas</h1>
 
         <?php
 
         // Test de permisos
         $permissions = new PermissionTest(
-                testUserAdmin: $this->adminTestUser,
-                testUserGestor: $this->gestCatTestUser,
-                testUserUsuario: $this->usuarioPYPTestUser,
-                testMemberData: $this->dataManagement->getTestData(TestController::Member),
-                testEducationData: $this->dataManagement->getTestData(TestController::Education),
-                testOutreachData: $this->dataManagement->getTestData(TestController::Outreach),
-                testCatalogueData: $this->dataManagement->getTestData(TestController::Catalogue),
-                testPyPItemData: $this->dataManagement->getTestData(TestController::PyPItem)
+            testUserAdmin: $this->adminTestUser,
+            testUserGestor: $this->gestCatTestUser,
+            testUserUsuario: $this->usuarioPYPTestUser,
+            testMemberData: $this->dataManagement->getTestData(TestController::Member),
+            testEducationData: $this->dataManagement->getTestData(TestController::Education),
+            testOutreachData: $this->dataManagement->getTestData(TestController::Outreach),
+            testCatalogueData: $this->dataManagement->getTestData(TestController::Catalogue),
+            testPyPItemData: $this->dataManagement->getTestData(TestController::PyPItem)
         );
         $permissions->runTests();
 
@@ -175,87 +178,51 @@ class ValidationTests
         $action = new BaseActionTest($this->adminTestUser->getJwtToken(), $this->dataManagement);
         $action->runTests();
     }
-
-}
-function enableTestingModeOnMappers(): void
-{
-    // Obtener todas las clases declaradas
-    $clases = get_declared_classes();
-
-    foreach ($clases as $clase) {
-        // Verificar si la clase es un Mapper (por ejemplo, que su nombre termine con 'Mapper')
-        if (strpos($clase, 'Mapper') !== false && method_exists($clase, 'enableTesting')) {
-            // Obtener la instancia del Mapper
-            $instancia = $clase::getInstance();
-
-            // Llamar a 'enableTesting' en la instancia del Mapper
-            $instancia->enableTesting();
-
-            echo "Testing habilitado para: $clase\n";
-        }
-    }
 }
 
-function disableTestingModeOnMappers(): void
-{
-    // Obtener todas las clases declaradas
-    $clases = get_declared_classes();
-
-    foreach ($clases as $clase) {
-        // Verificar si la clase es un Mapper (por ejemplo, que su nombre termine con 'Mapper')
-        if (strpos($clase, 'Mapper') !== false && method_exists($clase, 'disableTesting')) {
-            // Obtener la instancia del Mapper
-            $instancia = $clase::getInstance();
-
-            // Llamar a 'disableTesting' en la instancia del Mapper
-            $instancia->disableTesting();
-
-            echo "Testing deshabilitado para: $clase\n";
-        }
-    }
-}
 // Ejecución de las pruebas
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     try {
-        
         $tests = new ValidationTests('root', 'root');
-        enableTestingModeOnMappers();
+        PDOConnection::setTest(true);
         $tests->runTests();
         $tests->cleanUserTables();
-        disableTestingModeOnMappers();
-        $tests->cleanUserTables();
-        die();
+        PDOConnection::setTest(false);
     } catch (Exception $e) {
-        $tests->cleanUserTables();
         ?>
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <title>Pruebas de validación de campos de usuario</title>
-        </head>
-        <body>
-        <h1>Error en pruebas de validación de campos de usuario</h1>
-        <p>Estas pruebas validan los campos de usuario en las acciones de agregar, editar y obtener.</p>
-        <p style="color: darkred"><?= $e ?></p>
-        <p style="color: darkred">No se ha podido iniciar sesión con usuario por defecto, por favor introduce credenciales de usuario con rol ADMIN_GLOBAL.</p>
-        <form method="post">
-            <!--        Es necesario que el usuario nos envíe usuario y contraseña de admin_global -->
-            <label for="user">Usuario:</label>
-            <input type="text" id="user" name="user" required>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required>
+            <!DOCTYPE html>
+            <html lang="es">
 
-            <button type="submit">Ejecutar pruebas</button>
-        </form>
-        </body>
-        </html>
-        <?php
+            <head>
+                <meta charset="UTF-8">
+                <title>Pruebas de validación de campos de usuario</title>
+            </head>
 
+            <body>
+                <h1>Error en pruebas de validación de campos de usuario</h1>
+                <p>Estas pruebas validan los campos de usuario en las acciones de agregar, editar y obtener.</p>
+                <p style="color: darkred"><?= $e ?></p>
+                <p style="color: darkred">No se ha podido iniciar sesión con usuario por defecto, por favor introduce credenciales de usuario con rol ADMIN_GLOBAL.</p>
+                <form method="post">
+                    <!--        Es necesario que el usuario nos envíe usuario y contraseña de admin_global -->
+                    <label for="user">Usuario:</label>
+                    <input type="text" id="user" name="user" required>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required>
+
+                    <button type="submit">Ejecutar pruebas</button>
+                </form>
+            </body>
+
+            </html>
+    <?php
+
+    }finally {
+        $tests->cleanUserTables();
+        PDOConnection::setTest(false);
+        die();
     }
-
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_POST['user'] ?? null;
     $password = $_POST['password'] ?? null;
@@ -271,7 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
     }
-
 } else {
     http_response_code(405);
     die("Method not allowed");

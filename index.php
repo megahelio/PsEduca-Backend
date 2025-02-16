@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/core/config_file.php";
 require_once __DIR__ . "/core/JWT.php";
+require_once __DIR__ . "/core/PDOConnection.php";
 
 function run(): void
 {
@@ -63,6 +64,10 @@ function run(): void
     }
 
     // Llamar al método correspondiente del controlador
+    if ($body["test"] === "true") { //si test
+        PDOConnection::setTest(true);
+    }
+
     $restController->$actionName($body);
 }
 
@@ -73,7 +78,8 @@ function run(): void
  * @return string El nombre de la clase del controlador
  */
 
-function getControllerClassName(string $controllerName): string{
+function getControllerClassName(string $controllerName): string
+{
     return ucfirst($controllerName) . "Controller";
 }
 

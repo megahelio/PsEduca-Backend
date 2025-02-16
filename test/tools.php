@@ -4,7 +4,8 @@ require_once __DIR__ . "/../core/config_file.php";
 // Configuración inicial
 header("Content-Type: text/html; charset=UTF-8");
 
-function test($description, $callback) {
+function test($description, $callback)
+{
     static $testCount = 1;
     try {
         $callback();
@@ -23,28 +24,30 @@ function assertContains($expected, array $actual, $message = '')
     }
 }
 
-function assertEquals($expected, $actual, $message = '') {
+function assertEquals($expected, $actual, $message = '')
+{
     if ($expected !== $actual) {
         throw new Exception($message . " Se esperaba '$expected', se obtuvo '$actual'.");
     }
 }
 
-function assertNotEquals($expected, $actual, $message = '') {
+function assertNotEquals($expected, $actual, $message = '')
+{
     if ($expected === $actual) {
         throw new Exception($message . " Se esperaba que los valores fueran distintos.");
     }
+} {
 }
+
+function assertTrue($condition, $message = '')
 {
-
-}
-
-function assertTrue($condition, $message = '') {
     if (!$condition) {
         throw new Exception($message ?: "Condition is not true.");
     }
 }
 
-function assertFalse($condition, $message = '') {
+function assertFalse($condition, $message = '')
+{
     if ($condition) {
         throw new Exception($message ?: "Condition is not false.");
     }
@@ -77,9 +80,10 @@ function makeRequest($method, $url, $headers = [], $data = []): array
     if ($headers) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
-    if ($data) {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    }
+
+    $data['test']  = 'true';
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -88,4 +92,3 @@ function makeRequest($method, $url, $headers = [], $data = []): array
 
     return ['httpCode' => $httpCode, 'body' => json_decode($response, true)];
 }
-

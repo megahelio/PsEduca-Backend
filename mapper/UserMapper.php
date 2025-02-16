@@ -18,16 +18,6 @@ class UserMapper {
         }
         return self::$instance;
     }
-    public function enableTesting(): void
-    {
-        $this->db = PDOConnectionTesting::getInstance();
-    }
-
-    public function disableTesting(): void
-    {
-        $this->db = PDOConnection::getInstance();
-    }
-
 
     /**
     * Reference to the PDO connection
@@ -65,6 +55,7 @@ class UserMapper {
      */
     public function getUserInfo (int $userId, bool $bringPassword = false) : ?User
     {
+        error_log(PDOConnection::$test == true ? "TEST": "PROD");
         $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE id= :id");
         $stmt->execute(array(
             ':id' => $userId
@@ -122,7 +113,7 @@ class UserMapper {
         ];
 
         // Agregar contraseña si está definida y no es nula
-        if ($user->isChangingPassword() && $user->getPassword()) {
+        if ($user->getPassword()) {
             $sql .= ", contrasenha = :contrasenha";
             $params[':contrasenha'] = password_hash($user->getPassword(), PASSWORD_BCRYPT);
         }

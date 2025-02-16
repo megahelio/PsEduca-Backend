@@ -143,7 +143,7 @@ class PermissionValidation
 
                 $jwt_instance = new JWT();
                 $decoded_array = $jwt_instance->decode($token);
-
+                error_log("autenicate USER flag");
                 $user = $this->userMapper->getUserInfo($decoded_array["sub"], true);
                 if ($user != null) {
                     return $user;
