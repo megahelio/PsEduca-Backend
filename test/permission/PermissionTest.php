@@ -208,7 +208,7 @@ class PermissionTest
     {
         // Validar código HTTP
         if ($expectedHTTPCode !== null) {
-            assertEquals($expectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado1.");
+            assertEquals($expectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado.");
         }
         foreach ($notExpectedHTTPCodes as $notExpectedHTTPCode) {
             assertNotEquals($notExpectedHTTPCode, $response['httpCode'], "El código HTTP no es el esperado.");
