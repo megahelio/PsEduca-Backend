@@ -16,24 +16,30 @@ class MemberFormatTest
     public function runTests(): void
     {
         $validations = $this->defineActionFieldValidations();
-        $baseUrl = SERVER_URL;
         $headers = ["Authorization: Bearer $this->validToken"];
+        $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
 
         echo "<h3>Ejecutando pruebas para controlador MEMBER</h3>\n";
 
         foreach ($validations as $action => $fields) {
             foreach ($fields as $fieldName => $testCases) {
-                $url = match ($action) {
-                    'ADD' => "$baseUrl/?controller=member&action=add",
-                    'EDIT' => "$baseUrl/?controller=member&action=edit",
-                    'DELETE' => "$baseUrl/?controller=member&action=delete",
-                    'GET' => "$baseUrl/?controller=member&action=get",
-                    'LIST' => "$baseUrl/?controller=member&action=list",
-                    default => throw new Exception("Unknown action: $action"),
-                };
+                foreach ($testCases as &$case) {
+                    $case['payload'] = $case['payload'] ?? [];
+                    $case['payload']['controller'] = 'member';
+                    $case['payload']['action'] = match ($action) {
+                        'ADD' => 'add',
+                        'EDIT' => 'edit',
+                        'DELETE' => 'delete',
+                        'GET' => 'get',
+                        'LIST' => 'list',
+                        default => throw new Exception("Unknown action: $action"),
+                    };
+                }
+
+                unset($case);
 
                 echo "<h4>Ejecutando pruebas para $action - $fieldName</h4>\n";
-                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $url, $headers);
+                BaseFormatTest::runFieldValidationTest($fieldName, $action, $testCases, $serverURL, $headers);
             }
         }
     }

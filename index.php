@@ -69,11 +69,11 @@ function run(): void
 /**
  * Obtiene el nombre de la clase del controlador con base en el nombre recibido
  *
- * @param string $controllerName El nombre del controlador en el body
+ * @param string $controllerName El nombre del controlador en los encabezados
  * @return string El nombre de la clase del controlador
  */
-function getControllerClassName(string $controllerName): string
-{
+
+function getControllerClassName(string $controllerName): string{
     return ucfirst($controllerName) . "Controller";
 }
 

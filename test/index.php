@@ -48,14 +48,15 @@ class ValidationTests
     {
         // Login
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=auth&action=login";
 
         $payload = [
+            'controller' => 'auth',
+            'action' => 'login',
             'userName' => $user,
             'password' => $password
         ];
 
-        $response = makeRequest("POST", $url, [], $payload);
+        $response = makeRequest("POST", $serverURL, [], $payload);
 
         if ($response['httpCode'] != 200 || $response['body']['ok'] === false) {
             throw new Exception("Error generando token: " . print_r($response, true));
@@ -75,18 +76,19 @@ class ValidationTests
     private function insertTestUser(string $role): TestUser
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=user&action=add";
         $headers = ["Authorization: Bearer $this->token"];
         $userName = "TEST_USER" . rand(0, 1000);
         $password = "TEST_PASS" . rand(0, 1000);
         $payload = [
+            'controller' => 'user',
+            'action' => 'add',
             'userName' => $userName,
             'password' => $password,
             'fullName' => "TEST_FULL_NAME" . rand(0, 1000),
             'role' => $role
         ];
 
-        $response = makeRequest("POST", $url, $headers, $payload);
+        $response = makeRequest("POST", $serverURL, $headers, $payload);
 
         $responseBody = $response['body'];
 
@@ -110,13 +112,14 @@ class ValidationTests
     private function removeTestUser(TestUser $testUser): void
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=user&action=delete";
         $headers = ["Authorization: Bearer " .$this->token];
         $payload = [
+            'controller' => 'user',
+            'action' => 'delete',
             'id' => $testUser->getId(),
         ];
 
-        $response = makeRequest("POST", $url, $headers, $payload);
+        $response = makeRequest("POST", $serverURL, $headers, $payload);
 
         $responseBody = $response['body'];
 
@@ -149,7 +152,9 @@ class ValidationTests
                 testUserUsuario: $this->usuarioPYPTestUser,
                 testMemberData: $this->dataManagement->getTestData(TestController::Member),
                 testEducationData: $this->dataManagement->getTestData(TestController::Education),
-                testOutreachData: $this->dataManagement->getTestData(TestController::Outreach)
+                testOutreachData: $this->dataManagement->getTestData(TestController::Outreach),
+                testCatalogueData: $this->dataManagement->getTestData(TestController::Catalogue),
+                testPyPItemData: $this->dataManagement->getTestData(TestController::PyPItem)
         );
         $permissions->runTests();
 

@@ -17,6 +17,8 @@ class TestDataManagement
             TestController::Member->name => [],
             TestController::Education->name => [],
             TestController::Outreach->name => [],
+            TestController::Catalogue->name => [],
+            TestController::PyPItem->name => [],
         ];
         $this->insertTestData();
     }
@@ -77,7 +79,36 @@ class TestDataManagement
                 'type' => 'PAGINA_INTERNA',
                 'description' => 'Test description',
                 'externalURL' => 'https://test.com',
-                'pageContent' => '<html><body><h1>Un ejemplo de test</h1></body></html>',
+                'pageContent' => '<html><body></body></html>',
+            ],
+        ];
+
+        $catalogue_items = [
+            [
+                'acronym' => 'ACRONYM',
+                'name' => 'Name',
+                'yearMinAge' => '1',
+                'monthMinAge' => '1',
+                'yearMaxAge' => '2',
+                'monthMaxAge' => '2',
+                'authors' => 'Authors',
+                'time' => '15',
+                'description' => 'Description',
+                'note' => 'Note',
+                'areas' => ['Area 1', 'Area 2'],
+                'tags' => ['Tag 1', 'Tag 2'],
+                'resourceTypes' => ['Resource Type 1', 'Resource Type 2'],
+                'formats' => ['Format 1', 'Format 2'],
+                'applicationModes' => ['Application Mode 1', 'Application Mode 2'],
+            ],
+        ];
+
+        $pyp_items = [
+            [
+                'title' => 'Item divulgación 1',
+                'description' => 'Los detalles convenientes sobre el item 1.',
+                'imageURL' => '/uploads/67844f60644811.03749564.jpg',
+                'externalURL' => 'https://europa.eu',
             ],
         ];
 
@@ -102,6 +133,16 @@ class TestDataManagement
                 'action' => 'add',
                 'payloads' => $outreach_items,
             ],
+            [
+                'controller' => TestController::Catalogue,
+                'action' => 'add',
+                'payloads' => $catalogue_items,
+            ],
+            [
+                'controller' => TestController::PyPItem,
+                'action' => 'add',
+                'payloads' => $pyp_items,
+            ],
         ];
 
         foreach ($data as $item) {
@@ -116,10 +157,13 @@ class TestDataManagement
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
         foreach ($payloads as $payload) {
-            $url = $serverURL . "?controller=$controller->value&action=$action";
+
+            $payload['controller'] = $controller->value;
+            $payload['action'] = $action;
+
             $headers = ["Authorization: Bearer " .$this->validToken];
 
-            $response = makeRequest("POST", $url, $headers, $payload);
+            $response = makeRequest("POST", $serverURL, $headers, $payload);
 
             if ($response['httpCode'] !== 201) {
                 throw new Exception("Error inserting test data for controller: $controller->value " . print_r($response, true));
@@ -156,13 +200,14 @@ class TestDataManagement
     private function removeTestDataForController(string $controller, mixed $id): void
     {
         $serverURL = SERVER_URL . (str_ends_with(SERVER_URL, '/') ? '' : '/');
-        $url = $serverURL . "?controller=$controller&action=delete";
         $headers = ["Authorization: Bearer " .$this->validToken];
         $payload = [
+            'controller' => $controller,
+            'action' => 'delete',
             'id' => $id,
         ];
 
-        $response = makeRequest("POST", $url, $headers, $payload);
+        $response = makeRequest("POST", $serverURL, $headers, $payload);
 
         $responseBody = $response['body'];
 

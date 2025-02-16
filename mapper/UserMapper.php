@@ -112,7 +112,7 @@ class UserMapper {
         ];
 
         // Agregar contraseña si está definida y no es nula
-        if ($user->getPassword()) {
+        if ($user->isChangingPassword() && $user->getPassword()) {
             $sql .= ", contrasenha = :contrasenha";
             $params[':contrasenha'] = password_hash($user->getPassword(), PASSWORD_BCRYPT);
         }
