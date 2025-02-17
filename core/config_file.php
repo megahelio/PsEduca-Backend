@@ -6,9 +6,9 @@ const JWT_KEY = "jwt_key";
 // Database production settings
 const DB_HOST = "localhost";
 const DB_PORT = 3306;
-const DB_NAME = "pseduca";
-const DB_USER = "pseduca";
-const DB_PASS = "pseduca";
+const DB_NAME = "pseduca_DB";
+const DB_USER = "pseduca_user";
+const DB_PASS = "pseduca_pass";
 
 // Database test settings
 const DB_TEST_HOST = "localhost";
